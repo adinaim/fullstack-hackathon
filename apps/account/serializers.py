@@ -19,22 +19,22 @@ class RegistrationSerializer(serializers.ModelSerializer):
 
     def validate_phone(self, phone):
         if len(phone) != 13:
-            raise serializers.ValidationError('Invalid phone format')
+            raise serializers.ValidationError('Неправильный формат номера телефона.')
         return phone
 
     def validate(self, attrs):
         password = attrs.get('password')
         password_confirm = attrs.pop('password_confirm')
         if password != password_confirm:
-            raise serializers.ValidationError('Passwords do not match')
+            raise serializers.ValidationError('Пароли не совпадают.')
         return attrs
 
     def create(self, validated_data): 
         user = User.objects.create_user(**validated_data)
         user.create_activation_code()
-        if validated_data['code_confirm'] == 'email':
+        if validated_data['code_confirm_method'] == 'email':
             send_activation_code.delay(user.email, user.activation_code)
-        if validated_data['code_confirm'] == 'phone':
+        if validated_data['code_confirm_method'] == 'phone':
             send_activation_sms.delay(user.phone, user.activation_code)
         return user 
 
@@ -46,9 +46,9 @@ class PhoneActivationSerializer(serializers.Serializer):
     def validate_phone(self, phone):
         phone = normalize_phone(phone)
         if len(phone) != 13:
-            raise serializers.ValidationError('Invalid phone format')
+            raise serializers.ValidationError('Неправильный формат номера телефона.')
         if not User.objects.filter(phone=phone).exists():
-            raise serializers.ValidationError('No user found with this phone number')
+            raise serializers.ValidationError('Пользователя с таким номером телефона не существует.')
         return phone
 
     def validate_code(self, code):
@@ -77,7 +77,7 @@ class ChangePasswordSerializer(serializers.Serializer):
     def validate_old_password(self, old_password):
         user = self.context.get('request').user
         if not user.check_password(old_password):
-            raise serializers.ValidationError('wrong password!'.upper())
+            raise serializers.ValidationError('Неправильнвй пароль!'.upper())
         return old_password
 
     def validate(self, attrs: dict):
@@ -85,7 +85,7 @@ class ChangePasswordSerializer(serializers.Serializer):
         new_password_confirm = attrs.get('new_password_confirm')
         if new_password != new_password_confirm:
             raise serializers.ValidationError(
-                'password do not match'
+                'Пароли не совпадают.'
             )
         return attrs
 
@@ -103,7 +103,7 @@ class RestorePasswordSerializer(serializers.Serializer):
     def validate_phone(self, phone):
         phone = normalize_phone(phone)
         if len(phone) != 13:
-            raise serializers.ValidationError('Invalid phone format')
+            raise serializers.ValidationError('Неправильный формат номера телефона.')
         return phone
 
     def send_code(self):
@@ -122,7 +122,7 @@ class SetRestoredPasswordSerializer(serializers.Serializer):
     def validate_code(self, code):
         if not User.objects.filter(activation_code=code).exists():
             raise serializers.ValidationError(
-                'wrong code'
+                'Некорректный код.'
             )
         return code 
 
@@ -131,14 +131,14 @@ class SetRestoredPasswordSerializer(serializers.Serializer):
         new_password_confirm = attrs.get('new_password_confirm')
         if new_password != new_password_confirm:
             raise serializers.ValidationError(
-                'passwords code do not match'
+                'Пароли не совпадают.'
             )
         return attrs
 
     def validate_phone(self, phone):
         phone = normalize_phone(phone)
         if len(phone) != 13:
-            raise serializers.ValidationError('Invalid phone format')
+            raise serializers.ValidationError('Неправильный формат номера телефона.')
         return phone
 
     def set_new_password(self): 

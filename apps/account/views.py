@@ -17,13 +17,16 @@ from .serializers import (
 
 User = get_user_model()
 
-class RegistrationView(APIView):
-    def post(self, request: Request):
+class RegistrationView(mixins.CreateModelMixin,
+    mixins.DestroyModelMixin,
+    GenericViewSet):
+
+    def create(self, request: Request):
         serializer = RegistrationSerializer(data=request.data)
         if serializer.is_valid(raise_exception=True):
             serializer.save()
             return Response(
-                'Thanks for registration! Activate your account', 
+                'Спасибо за регистрацию! Актиыируйте аккаунт', 
                 status=status.HTTP_201_CREATED
             )
 
@@ -34,7 +37,7 @@ class ActivationView(APIView):
         if serilizer.is_valid(raise_exception=True):
             serilizer.activate_account()
             return Response(
-                'Account activated. You can login now.',
+                'Аккаунт активирован. Вы можете войти в свой профиль.',
                 status=status.HTTP_200_OK
             )
 
@@ -47,7 +50,7 @@ class ChangePasswordView(APIView):
         if serializer.is_valid(raise_exception=True):
             serializer.set_new_password()
             return Response(
-                'Password changed succesfully',
+                'Пароль успешно изменен.',
                 status=status.HTTP_200_OK
             )
 
@@ -58,7 +61,7 @@ class RestorePasswordView(APIView):
         if serializer.is_valid(raise_exception=True):
             serializer.send_code()
             return Response(
-                'Code was sent to your phone',
+                'Код был отправлен на ваш телефон.',
                 status=status.HTTP_200_OK
             )
 
@@ -69,7 +72,7 @@ class SetRestoredPasswordView(APIView):
         if serializer.is_valid(raise_exception=True):
             serializer.set_new_password()
             return Response(
-                'password restored successfuly',
+                'Пароль успешно восстановлен.',
                 status=status.HTTP_200_OK
             )
 
@@ -81,6 +84,6 @@ class DeleteAccountView(APIView):
         username = request.user.username
         User.objects.get(username=username).delete()
         return Response(
-            'Your account has been deleted.',
+            'Ваш аккаунт удален.',
             status=status.HTTP_204_NO_CONTENT
         )
