@@ -40,6 +40,7 @@ class RegistrationSerializer(serializers.ModelSerializer):
 
 
 class ActivationSerializer(serializers.Serializer):
+    username = serializers.ReadOnlyField(source='user.username') # потому что телефон не unique
     phone = serializers.CharField(max_length=13, required=True)
     code = serializers.CharField(max_length=10, required=True)
 
