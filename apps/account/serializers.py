@@ -15,7 +15,7 @@ class RegistrationSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ('username', 'email', 'phone', 'password', 'password_confirm', 'code_confirm')
+        fields = ('username', 'email', 'phone', 'password', 'password_confirm', 'code_confirm_method')
 
     def validate_phone(self, phone):
         if len(phone) != 13:
@@ -33,13 +33,13 @@ class RegistrationSerializer(serializers.ModelSerializer):
         user = User.objects.create_user(**validated_data)
         user.create_activation_code()
         if validated_data['code_confirm_method'] == 'email':
-            send_activation_code.delay(user.email, user.activation_code)
+            send_activation_code(user.email, user.activation_code)
         if validated_data['code_confirm_method'] == 'phone':
-            send_activation_sms.delay(user.phone, user.activation_code)
+            send_activation_sms(user.phone, user.activation_code) # delay
         return user 
 
 
-class PhoneActivationSerializer(serializers.Serializer):
+class ActivationSerializer(serializers.Serializer):
     phone = serializers.CharField(max_length=13, required=True)
     code = serializers.CharField(max_length=10, required=True)
 
