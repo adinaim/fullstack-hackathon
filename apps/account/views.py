@@ -9,7 +9,7 @@ from rest_framework.decorators import action
 
 from .serializers import (
     RegistrationSerializer,
-    PhoneActivationSerializer,
+    ActivationSerializer,
     ChangePasswordSerializer,
     RestorePasswordSerializer,
     SetRestoredPasswordSerializer,
@@ -17,23 +17,21 @@ from .serializers import (
 
 User = get_user_model()
 
-class RegistrationView(mixins.CreateModelMixin,
-    mixins.DestroyModelMixin,
-    GenericViewSet):
+class RegistrationView(APIView):
 
-    def create(self, request: Request):
+    def post(self, request: Request):
         serializer = RegistrationSerializer(data=request.data)
         if serializer.is_valid(raise_exception=True):
             serializer.save()
             return Response(
-                'Спасибо за регистрацию! Актиыируйте аккаунт', 
+                'Спасибо за регистрацию! Активируйте аккаунт', 
                 status=status.HTTP_201_CREATED
             )
 
 
 class ActivationView(APIView):
     def post(self, request: Request): 
-        serilizer = PhoneActivationSerializer(data=request.data)
+        serilizer = ActivationSerializer(data=request.data)
         if serilizer.is_valid(raise_exception=True):
             serilizer.activate_account()
             return Response(
