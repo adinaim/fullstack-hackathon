@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'django_filters',
 
     'apps.account',
+    'apps.business'
     # 'apps.booking',
     # 'apps.bio',
     # 'apps.review',
@@ -122,7 +123,7 @@ AUTH_USER_MODEL = 'account.User'
 # Internationalization
 # https://docs.djangoproject.com/en/4.1/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'ru'
 
 TIME_ZONE = 'UTC'
 
@@ -185,9 +186,19 @@ SIMPLE_JWT = {
 }
 
 
+REST_FRAMEWORK = {
+
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ),
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 2,
+}
+
 EMAIL_BACKENDS = 'django.core.mail.backends.smtp.EmailBackend' 
 EMAIL_HOST_USER = config('EMAIL_HOST_USER') 
 EMAIL_PORT = config('EMAIL_PORT', default = 587)
 EMAIL_HOST = config('EMAIL_HOST') 
 EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD') 
 EMAIL_USE_TLS = config('EMAIL_USE_TLS', cast=bool)
+
