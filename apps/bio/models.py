@@ -7,19 +7,20 @@ User = get_user_model()
 
 
 class UserProfile(models.Model):
-    user = models.ForeignKey(
+    user = models.OneToOneField(
         to=User,
         on_delete=models.CASCADE,
-        related_name='user_profile'
+        related_name='user_profile',
+        primary_key=True
     )
-    first_name = models.CharField(max_length=150)
-    last_name = models.CharField(max_length=150)
-    birthday = models.DateField()
+    first_name = models.CharField(max_length=150, verbose_name='Имя')
+    last_name = models.CharField(max_length=150, verbose_name='Фамилия')
+    birthday = models.DateField(verbose_name='Дата рождения')
     cashaback = models.PositiveIntegerField(default=3)
-    collected_sum = models.PositiveIntegerField(verbose_name='Собранная сумма')
+    collected_sum = models.PositiveIntegerField(verbose_name='Собранная сумма', default=0)
 
     def __str__(self) -> str:
-        return self.first_name,' ',  self.last_name
+        return f'{self.first_name} {self.last_name}'
 
     class Meta:
         verbose_name = 'Профиль пользователя'

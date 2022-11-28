@@ -9,7 +9,8 @@ class BusinessProfile(models.Model):
     user = models.ForeignKey(
         to=User,
         on_delete=models.CASCADE,
-        related_name='profile'
+        related_name='profile',
+        primary_key=True
     )
     title = models.CharField(max_length=100, verbose_name='Название компании', unique=True)
     image = models.ImageField(upload_to='media/business_profile_images')
