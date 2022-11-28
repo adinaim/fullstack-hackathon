@@ -1,10 +1,10 @@
 from django.conf import settings
-# from config.celery import app
+from config.celery import app
 from django.core.mail import send_mail
 from django.template.loader import render_to_string
 
 
-# @app.task
+@app.task
 def send_activation_sms(phone, activation_code):
     from twilio.rest import Client
     client = Client(settings.TWILIO_SID, settings.TWILIO_AUTH_TOKEN)
@@ -16,7 +16,7 @@ def send_activation_sms(phone, activation_code):
     print(message.sid)
 
 
-# @app.task
+@app.task
 def send_activation_code(email, activation_code):
     activation_link = f'http://localhost:8000/api/account/activate/{activation_code}/'
     html_message = render_to_string(
