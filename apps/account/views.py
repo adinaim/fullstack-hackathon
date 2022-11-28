@@ -1,11 +1,13 @@
 from rest_framework.views import APIView
 from rest_framework.request import Request
 from rest_framework.response import Response
-from rest_framework import status, mixins
+from rest_framework import status#, mixins, generics
 from django.contrib.auth import get_user_model
 from rest_framework.permissions import IsAuthenticated
-from rest_framework.viewsets import GenericViewSet
-from rest_framework.decorators import action
+# from rest_framework.viewsets import GenericViewSet
+# from rest_framework.decorators import action
+from drf_yasg.utils import swagger_auto_schema
+
 
 from .serializers import (
     RegistrationSerializer,
@@ -15,10 +17,12 @@ from .serializers import (
     SetRestoredPasswordSerializer,
     )
 
+# from .utils import activate_account
+
 User = get_user_model()
 
 class RegistrationView(APIView):
-
+    @swagger_auto_schema(request_body=RegistrationSerializer)
     def post(self, request: Request):
         serializer = RegistrationSerializer(data=request.data)
         if serializer.is_valid(raise_exception=True):
@@ -29,15 +33,58 @@ class RegistrationView(APIView):
             )
 
 
-class ActivationView(APIView):
+class PhoneActivationView(APIView):    # sms
     def post(self, request: Request): 
-        serilizer = ActivationSerializer(data=request.data)
-        if serilizer.is_valid(raise_exception=True):
-            serilizer.activate_account()
+        serializer = ActivationSerializer(data=request.data)
+        if serializer.is_valid(raise_exception=True):
+            serializer.activate_account()
             return Response(
                 'Аккаунт активирован. Вы можете войти в свой профиль.',
                 status=status.HTTP_200_OK
             )
+    
+    # def get_renderer_context(self):
+    #     context = super().get_renderer_context()
+    #     context['request'] = self.request
+    #     return context
+
+
+class EmailActivationView(APIView):    # email
+    def get(self, request, activation_code):
+        user = User.objects.filter(activation_code=activation_code).first()
+        if not user:
+            return Response(
+                'Page not found.' ,
+                status=status.HTTP_404_NOT_FOUND
+                )
+        user.is_active = True        # переписать DRY
+        user.activation_code = ''
+        user.save()
+        return Response(
+            'Account activated. You can login now.',
+            status=status.HTTP_200_OK
+            )
+
+            
+# class ActivateView(generics.CreateAPIView):
+#     queryset = User.objects.all()
+#     serializer_class = ActivationSerializer
+
+#     def get_renderer_context(self):
+#         context = super().get_renderer_context()
+#         context['request'] = self.request
+#         return context
+
+#     def perform_create(self, serializer, *args, **kwargs):
+#         activate_account()
+#         return super().perform_create(serializer)
+
+#     def activate_account(self):
+#         phone = self.validated_data.get('phone')
+#         user = User.objects.get(phone=phone)
+#         user.is_active = True
+#         user.activation_code = ''
+#         user.save()
 
 
 class ChangePasswordView(APIView):
