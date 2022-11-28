@@ -22,8 +22,8 @@ class RegistrationSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError(
                 'The username is taken. choose another one.'
                 )
-        if len(username) < 5 or len(username) > 24:
-            raise serializers.ValidationError('Username must be between 5 and 24 characters long')
+        # if len(username) < 5 or len(username) > 50:    # max_num уже проверяет
+        #     raise serializers.ValidationError('Username must be between 5 and 24 characters long')
         if not username.replace('_', '').replace('.', '').isalnum(): 
             raise serializers.ValidationError('Username can only contain letters, numbers, an \'_\' and \'.\'')
         if '_.' in username or '._' in username:
