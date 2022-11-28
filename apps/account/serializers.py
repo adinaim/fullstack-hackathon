@@ -15,7 +15,22 @@ class RegistrationSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ('username', 'email', 'phone', 'password', 'password_confirm', 'code_confirm_method')
+        fields = ('username', 'email', 'phone', 'password', 'password_confirm', 'code_method')
+
+    def validate_username(self, username):
+        if User.objects.filter(username=username).exists():
+            raise serializers.ValidationError(
+                'The username is taken. choose another one.'
+                )
+        if len(username) < 5 or len(username) > 24:
+            raise serializers.ValidationError('Username must be between 5 and 24 characters long')
+        if not username.replace('_', '').replace('.', '').isalnum(): 
+            raise serializers.ValidationError('Username can only contain letters, numbers, an \'_\' and \'.\'')
+        if '_.' in username or '._' in username:
+            raise serializers.ValidationError('\'_\' and \'.\' cannot stand next to each other')
+        if not username[0].isalpha():
+            raise serializers.ValidationError('Username must start with a letter')
+        return username
 
     def validate_phone(self, phone):
         if len(phone) != 13:
@@ -29,39 +44,67 @@ class RegistrationSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError('Пароли не совпадают.')
         return attrs
 
+
     def create(self, validated_data): 
         user = User.objects.create_user(**validated_data)
         user.create_activation_code()
-        if validated_data['code_confirm_method'] == 'email':
+        if validated_data['code_method'] == 'email':
             send_activation_code(user.email, user.activation_code)
-        if validated_data['code_confirm_method'] == 'phone':
-            send_activation_sms(user.phone, user.activation_code) # delay
+        if validated_data['code_method'] == 'phone':
+            send_activation_sms(user.phone, user.activation_code) # delay, celery
         return user 
 
 
 class ActivationSerializer(serializers.Serializer):
-    username = serializers.ReadOnlyField(source='user.username') # потому что телефон не unique
-    phone = serializers.CharField(max_length=13, required=True)
+    username = serializers.CharField(max_length=50, required=True) # потому что телефон не unique, получить из запроса
+    # phone = serializers.CharField(max_length=13, required=True) # получить из запроса, подключить токены
     code = serializers.CharField(max_length=10, required=True)
 
-    def validate_phone(self, phone):
-        phone = normalize_phone(phone)
-        if len(phone) != 13:
-            raise serializers.ValidationError('Неправильный формат номера телефона.')
-        if not User.objects.filter(phone=phone).exists():
-            raise serializers.ValidationError('Пользователя с таким номером телефона не существует.')
-        return phone
+    # def validate_phone(self, phone):
+    #     phone = normalize_phone(phone)
+    #     if len(phone) != 13:
+    #         raise serializers.ValidationError('Неправильный формат номера телефона.')
+    #     if not User.objects.filter(phone=phone).exists():
+    #         raise serializers.ValidationError('Пользователя с таким номером телефона не существует.')
+    #     return phone
+
+    def validate_user(self, username):
+        if not User.objects.filter(username=username).exists():
+            raise serializers.ValidationError('Пользователя с таким ником не существует.')
+        return username
 
     def validate_code(self, code):
+        # user = self.context['request'].user
+        # print(validated_data)
+        # code = validated_data['code']
         if not User.objects.filter(activation_code=code).exists():
-            raise serializers.ValidationError('Invalid activation code')
+            raise serializers.ValidationError('Некорректный код.')
+        return code
 
     def activate_account(self):
-        phone = self.validated_data.get('phone')
-        user = User.objects.get(phone=phone)
+        username = self.validated_data.get('username')
+        user = User.objects.get(username=username)
+        print(f'sdfg {user}')
         user.is_active = True
         user.activation_code = ''
         user.save()
+
+    # def validate_email(self):
+    #     ...
+
+    # def email_validator(email):
+    #     if not User.objects.filter(email=email).exists():
+    #         raise serializers.ValidationError(
+    #             'User with such email is not found.'
+    #         )
+    #     return email
+
+    # def validate(self, attrs):
+    #     user = self.context['request'].user
+    #     attrs['user'] = user
+    #     # attrs['phone'] = ...
+    #     # attrs['email'] = ...
+    #     return attrs
 
 
 class UserListSerializer(serializers.ModelSerializer):
@@ -98,7 +141,6 @@ class ChangePasswordSerializer(serializers.Serializer):
 
 
 class RestorePasswordSerializer(serializers.Serializer):
-
     phone = serializers.CharField(max_length=13, required=True)
 
     def validate_phone(self, phone):

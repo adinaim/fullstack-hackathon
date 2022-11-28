@@ -6,7 +6,9 @@ from rest_framework_simplejwt.views import (
 
 from .views import (
     RegistrationView,
-    ActivationView,
+    PhoneActivationView,
+    EmailActivationView,
+    # ActivateView,
     ChangePasswordView,
     SetRestoredPasswordView,
     RestorePasswordView,
@@ -14,8 +16,9 @@ from .views import (
 )
 
 urlpatterns = [
-    path('registration/', RegistrationView.as_view(), name='registartion'),
-    path('activate/', ActivationView.as_view(), name='activate'),
+    path('register/', RegistrationView.as_view(), name='registartion'),
+    path('activate/<str:activation_code>/', EmailActivationView.as_view(), name='activation'),
+    path('activate/', PhoneActivationView.as_view(), name='activate'),
     path('login/', TokenObtainPairView.as_view(), name='login'),
     path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),   
     path('change-password/', ChangePasswordView.as_view(), name='change-password'),

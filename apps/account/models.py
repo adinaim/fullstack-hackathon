@@ -33,22 +33,23 @@ class User(AbstractBaseUser):
     RANDOM_STRING_CHARS = "1234567890"
 
     CONFIRM_CHOICES = (
-        ('email', 'email'),
-        ('phone', 'phone')
+        ('email', 'E-MAIL'),
+        ('phone', 'SMS')
     )
 
-    username = models.CharField(max_length=50, primary_key=True, unique=True)
+    username = models.CharField(max_length=24, primary_key=True, unique=True)
     phone = models.CharField(max_length=13)  # , unique=True)
-    email = models.CharField(max_length=255, unique=True)#, null=True)
+    email = models.CharField(max_length=255, unique=True, null=True)
     is_staff = models.BooleanField(default=False)
     is_active = models.BooleanField(default=False)
     activation_code = models.CharField(max_length=10, blank=True)
-    code_confirm_method = models.CharField(choices=CONFIRM_CHOICES, max_length=6)
+    code_method = models.CharField(choices=CONFIRM_CHOICES, max_length=6, default='phone')
+    # birthday (MinValueValidator)
 
     objects = UserManager()
 
     USERNAME_FIELD = 'username'
-    REQUIRED_FIELDS = ['phone']
+    REQUIRED_FIELDS = ['phone', 'email']
 
     def has_module_perms(self, app_label):
         return self.is_staff
