@@ -26,6 +26,8 @@ class ProfileViewSet(ModelViewSet):
             return UserProfileListSerializer
         elif self.action == 'create':
             return UserProfileCreateSerializer
+        elif self.action == 'retrieve':
+            return UserProfileSerializer
         return super().get_serializer_class()
 
     def get_permissions(self):
