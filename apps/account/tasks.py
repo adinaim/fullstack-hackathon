@@ -24,7 +24,7 @@ def send_activation_code(email, activation_code):
         {'activation_link': activation_link}
         )
     send_mail(
-        'activate your account!',
+        'Активируйте ваш аккаунт!',
         '',
         settings.EMAIL_HOST_USER,
         [email],

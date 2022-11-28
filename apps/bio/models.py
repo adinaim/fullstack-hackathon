@@ -17,7 +17,11 @@ class UserProfile(models.Model):
     last_name = models.CharField(max_length=150, verbose_name='Фамилия')
     birthday = models.DateField(verbose_name='Дата рождения')
     cashaback = models.PositiveIntegerField(default=3)
+    collected_sum = models.PositiveIntegerField(verbose_name='Собранная сумма')
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
     collected_sum = models.PositiveIntegerField(verbose_name='Собранная сумма', default=0)
+
 
     def __str__(self) -> str:
         return f'{self.first_name} {self.last_name}'

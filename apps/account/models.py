@@ -1,4 +1,5 @@
 import code
+from tabnanny import verbose
 from django.db import models
 from django.utils.crypto import get_random_string
 from django.contrib.auth.base_user import AbstractBaseUser, BaseUserManager
@@ -37,7 +38,7 @@ class User(AbstractBaseUser):
         ('phone', 'SMS')
     )
 
-    username = models.CharField(max_length=24, primary_key=True, unique=True)
+    username = models.CharField(max_length=50, primary_key=True, unique=True)
     phone = models.CharField(max_length=13)  # , unique=True)
     email = models.CharField(max_length=255, unique=True, null=True)
     is_staff = models.BooleanField(default=False)
@@ -66,3 +67,7 @@ class User(AbstractBaseUser):
 
     def __str__(self) -> str:
         return self.username
+
+    class Meta:
+        verbose_name = 'Пользователь'
+        verbose_name_plural = 'Пользователи'
