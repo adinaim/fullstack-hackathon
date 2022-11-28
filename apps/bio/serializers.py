@@ -1,4 +1,4 @@
-from rest_framework import serializers
+from rest_framework import serializers, status
 from django.contrib.auth import get_user_model
 
 from .models import UserProfile
@@ -15,9 +15,9 @@ class UserProfileCreateSerializer(serializers.Serializer):
 
     first_name = serializers.CharField(max_length=20)
     last_name = serializers.CharField(max_length=40)
-    
+    birthday = serializers.DateField()
+
     def create(self, validated_data):
-        # return super().create(validated_data)
         profile = UserProfile.objects.create(**validated_data)
         return profile
 
