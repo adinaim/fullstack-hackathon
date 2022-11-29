@@ -18,7 +18,7 @@ class TourPurchase(models.Model):
     )
     tour = models.ManyToManyField(
         to=Tour,
-        through='OrderItems',
+        through='TourItems',
     )
     order_id = models.CharField(max_length=58, blank=True)
     people_num = models.PositiveIntegerField()
