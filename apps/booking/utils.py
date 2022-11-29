@@ -1,5 +1,5 @@
 from apps.bio.models import UserProfile
-from .models import Order
+from .models import TourPurchase
 
 
 def cashback(context, order, total_sum):
