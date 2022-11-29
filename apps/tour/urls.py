@@ -1,7 +1,10 @@
 from django.urls import path
 # from rest_framework.routers import DefaultRouter
 
-from .views import TourCreateView
+from .views import (
+    TourView,
+    # TourListView,
+)
 
 # router = DefaultRouter()
 
@@ -10,6 +13,9 @@ from .views import TourCreateView
 
 
 urlpatterns = [ 
-    path('create-tour/', TourCreateView.as_view(), name='create-tour')
+    path('tour/', TourView.as_view(), name='tour'),
+    path('tour/<str:slug>/', TourView.as_view(), name='tour'),
+
+    # path('list/', TourListView.as_view(), name='list-tour')
 ]
 # urlpatterns += router.urls

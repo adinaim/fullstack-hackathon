@@ -37,11 +37,12 @@ class Tour(models.Model):
         return self.title
 
     def save(self, *args, **kwargs):
-        if not self.slug:
-            self.slug = slugify(self.title)
-        if not self.price_usd:
-            self.price_usd = round(self.price_som / 84, 1)
+        # if not self.slug:
+        self.slug = slugify(self.title)
+        # if not self.price_usd:
+        #     self.price_usd = round(self.price_som / 84, 1)
         return super().save(*args, **kwargs)
+
 
     class Meta:
         verbose_name = 'Тур'
