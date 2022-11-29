@@ -113,6 +113,7 @@ class TourCreateSerializer(serializers.ModelSerializer):
         write_only=True,
         # blank=True
     )
+    guide = serializers.CharField(max_length=100)
     place = serializers.CharField(max_length=150)
     date = serializers.DateField()
     price = serializers.IntegerField()
