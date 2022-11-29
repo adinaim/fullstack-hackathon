@@ -8,7 +8,7 @@ from rest_framework.generics import get_object_or_404
 
 from .models import TourPurchase
 from .serializers import (
-    TourItemsSerializer,
+    # TourItemsSerializer,
     TourPurchaseSerializer,
     # OrderHistorySerializer,
 )
@@ -37,15 +37,15 @@ class OrderViewSet(ModelViewSet):
 #         return TourPurchase.objects.filter(user=user)
        
 
-class PurchaseCreateView(CreateAPIView):
-    serializer_class = TourPurchaseSerializer
+# class PurchaseCreateView(CreateAPIView):
+#     serializer_class = TourPurchaseSerializer
 
-    def get_queryset(self):
-        user = self.request.user
-        return TourPurchase.objects.filter(user=user)
+#     def get_queryset(self):
+#         user = self.request.user
+#         return TourPurchase.objects.filter(user=user)
 
-    def perform_create(self, serializer):
-        author = get_object_or_404(TourPurchase, id=self.request.data.get('author_id'))
-        return serializer.save(author=author)
+#     def perform_create(self, serializer):
+#         author = get_object_or_404(TourPurchase, id=self.request.data.get('author_id'))
+#         return serializer.save(author=author)
 
     
