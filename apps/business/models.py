@@ -22,7 +22,6 @@ class BusinessProfile(models.Model):
     address = models.CharField(max_length=150, verbose_name='Адресс')
 
     def save(self, *args, **kwargs):
-        self.in_stock = self.quantity > 0
         if not self.slug:
             self.slug = slugify(self.title)
         return super().save(*args, **kwargs)
@@ -37,12 +36,12 @@ class BusinessProfile(models.Model):
 
 
 class Guide(models.Model):
-    company_name = models.ForeignKey(
-        to=BusinessProfile,
-        on_delete=models.CASCADE,
-        verbose_name='Компания',
-        related_name='guides'
-    )
+    # company_name = models.ForeignKey(
+    #     to=BusinessProfile,
+    #     on_delete=models.CASCADE,
+    #     verbose_name='Компания',
+    #     related_name='guides'
+    # )
     first_name = models.CharField(max_length=150, verbose_name='Имя')
     last_name = models.CharField(max_length=150, verbose_name='Фамилия')
 
@@ -80,12 +79,14 @@ class Tour(models.Model):
     )
 
 
-    title = models.CharField(max_length=100, verbose_name='Название тура', primary_key=True)
-    company_name = models.ForeignKey(
-        to=BusinessProfile,
-        on_delete=models.CASCADE,
-        verbose_name='Компания'
-    )
+    title = models.CharField(max_length=100, verbose_name='Название тура')
+    slug = models.SlugField(max_length=200, primary_key=True, blank=True)
+
+    # company_name = models.ForeignKey(
+    #     to=BusinessProfile,
+    #     on_delete=models.CASCADE,
+    #     verbose_name='Компания'
+    # )
     guide = models.ForeignKey(
         to=Guide,
         on_delete=models.CASCADE,

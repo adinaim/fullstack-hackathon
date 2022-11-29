@@ -10,7 +10,7 @@ from apps.bio.models import UserProfile
 class TourItemsSerializer(serializers.ModelSerializer):
     class Meta:
         model = TourItems
-        fields = ['book', 'quantity']
+        fields = ['order']
 
 
 class TourPurchaseSerializer(serializers.ModelSerializer):

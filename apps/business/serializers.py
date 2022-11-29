@@ -38,22 +38,24 @@ class BusinessProfileCreateSerializer(serializers.ModelSerializer):
         profile = BusinessProfile.objects.create(**validated_data)
         return profile
       
-    def to_representation(self, instance):
-        rep =  super().to_representation(instance)
-        rep['guide'] = GuideListSerializer(
-            instance.guides.all(), many=True
-        )
-        return rep
-        # rep['tour'] = TourListSerializer(
-        #     instance.title.all(), many=True
-        # )
-
+  
 
 class BusinessProfileSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = BusinessProfile
         fields = '__all__'
+
+    # def to_representation(self, instance):
+    #     rep =  super().to_representation(instance)
+    #     rep['guide'] = GuideListSeriaizer(
+    #         instance.guides.all(), many=True
+    #     )
+    #     return rep
+    #     # rep['tour'] = TourListSerializer(
+    #     #     instance.title.all(), many=True
+    #     # )
+
 
 
 class BusinessProfileListSerializer(serializers.ModelSerializer):
@@ -63,82 +65,80 @@ class BusinessProfileListSerializer(serializers.ModelSerializer):
         fields = ['title', 'phone', 'email', 'address']
 
 
-
-
 class GuideCreateSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Guide 
+        fields = '__all__'
+
+    
     # company_name = serializers.ReadOnlyField(
-    #     source='company_name.title'
+    #     source='company_name.slug'
     # )
-    first_name = serializers.CharField(max_length=150)
-    last_name = serializers.CharField(max_length=150)
+    first_name = serializers.CharField(max_length=100)
+    last_name = serializers.CharField(max_length=100)
 
+    def validate_phone(self, phone):
+        phone = normalize_phone(phone)
+        if len(phone) != 13:
+            raise serializers.ValidationError('Invalid phone format!')
+        return phone  
+
+    def create(self, validated_data):
+        guide = Guide.objects.create(**validated_data)
+        return guide
+
+
+class GuideSeriaizer(serializers.ModelSerializer):
     class Meta:
         model = Guide
         fields = '__all__'
 
-    # def create(self, validated_data):
-    #     # return super().create(validated_data)
-    #     guide = Guide.objects.create(**validated_data)
-    #     return guide
 
-
-class GuideListSerializer(serializers.ModelSerializer):
+class GuideListSeriaizer(serializers.ModelSerializer):
     class Meta:
         model = Guide
-        fields = '__all__'
-
-class GuideSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Guide
-        fields = '__all__'
+        fields = ['first_name', 'last_name', 'company_name']
 
 
 class TourCreateSerializer(serializers.ModelSerializer):
-    title = serializers.CharField(max_length=100)
-    company_name = serializers.CharField(max_length=150)
-    guide = serializers.CharField(max_length=150)
-    image = serializers.ImageField()
-    image_carousel = serializers.ListField(
-        child=serializers.ImageField(),
-        write_only=True,
-    )
-    place = serializers.CharField(max_length=100)
-    date = serializers.DateField()
-    price = serializers.IntegerField()
-    people_count = serializers.CharField(max_length=2)
-    desc = serializers.CharField(max_length=150)
-    number_of_days = serializers.IntegerField()
-    level = serializers.CharField(max_length=8)
-
     class Meta:
         model = Tour
         fields = '__all__'
 
+    title = serializers.CharField(max_length=150)
+    image = serializers.ImageField()
+    tour_image_carousel = serializers.ListField(
+        child=serializers.ImageField(),
+        write_only=True,
+        # blank=True
+    )
+    place = serializers.CharField(max_length=150)
+    date = serializers.DateField()
+    price = serializers.IntegerField()
+    people_count = serializers.IntegerField()
+    desc = serializers.CharField(max_length=150)
+    level = serializers.CharField(max_length=9)
+    number_of_days = serializers.IntegerField()
+
     def create(self, validated_data):
+        # tour = Tour.objects.create(**validated_data)
+        avatar_carousel = validated_data.pop('tour_image_carousel')
         tour = Tour.objects.create(**validated_data)
-        image_carousel = validated_data.pop('image_carousel')
         images = []
-        for image in image_carousel:
+        for image in avatar_carousel:
             images.append(TourImage(tour=tour, image=image))
         TourImage.objects.bulk_create(images)
         return tour
 
-    def to_representation(self, instance):
-        rep = super().to_representation(instance)
-        rep['image'] = TourImageSerializer(
-            instance.tour_images.all(),
-            many=True
-        ).data 
-        return rep
-
-
-class TourImageSerializer(serializers.ModelSerializer):
+    
+class TourSerializer(serializers.ModelSerializer):
     class Meta:
-        model = TourImage
-        fields = 'image'
+        model = Tour
+        fields = '__all__'
 
 
 class TourListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Tour
-        fields = ['title', 'place', 'date', 'level']
+        fields = ['title', 'image', 'place', 'date', 'level', 'price', 'number_of_days']
