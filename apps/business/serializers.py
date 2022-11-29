@@ -57,7 +57,7 @@ class BusinessProfileSerializer(serializers.ModelSerializer):
         return rep
         # rep['tour'] = TourListSerializer(
         #     instance.title.all(), many=True
-        # )
+        # ).data
 
 
 class BusinessProfileListSerializer(serializers.ModelSerializer):
@@ -104,4 +104,4 @@ class GuideSeriaizer(serializers.ModelSerializer):
 class GuideListSeriaizer(serializers.ModelSerializer):
     class Meta:
         model = Guide
-        fields = ['first_name', 'last_name', 'company_name']
+        fields = ['first_name', 'last_name']
