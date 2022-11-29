@@ -1,3 +1,6 @@
 from django.contrib import admin
 
-# Register your models here.
+from .models import Tour, ConcreteTour
+
+
+admin.site.register(Tour)
