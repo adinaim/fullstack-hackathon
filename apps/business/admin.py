@@ -1,9 +1,8 @@
 from django.contrib import admin
 
 
-from .models import BusinessProfile, Guide, Tour
+from .models import BusinessProfile, Guide
 
 
 admin.site.register(BusinessProfile)
 admin.site.register(Guide)
-admin.site.register(Tour)
