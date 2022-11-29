@@ -4,8 +4,6 @@ from rest_framework import serializers
 from .models import (
     BusinessProfile,
     Guide,
-    Tour,
-    TourImage,
     BusinessImage
 )
 from apps.account.utils import normalize_phone
@@ -104,47 +102,3 @@ class GuideListSeriaizer(serializers.ModelSerializer):
     class Meta:
         model = Guide
         fields = ['first_name', 'last_name', 'company_name']
-
-
-class TourCreateSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Tour
-        fields = '__all__'
-
-    title = serializers.CharField(max_length=150)
-    image = serializers.ImageField()
-    tour_image_carousel = serializers.ListField(
-        child=serializers.ImageField(),
-        write_only=True,
-        # blank=True
-    )
-    guide = serializers.CharField(max_length=100)
-    place = serializers.CharField(max_length=150)
-    date = serializers.DateField()
-    price = serializers.IntegerField()
-    people_count = serializers.IntegerField()
-    desc = serializers.CharField(max_length=150)
-    level = serializers.CharField(max_length=9)
-    number_of_days = serializers.IntegerField()
-
-    def create(self, validated_data):
-        # tour = Tour.objects.create(**validated_data)
-        avatar_carousel = validated_data.pop('tour_image_carousel')
-        tour = Tour.objects.create(**validated_data)
-        images = []
-        for image in avatar_carousel:
-            images.append(TourImage(tour=tour, image=image))
-        TourImage.objects.bulk_create(images)
-        return tour
-
-    
-class TourSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Tour
-        fields = '__all__'
-
-
-class TourListSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Tour
-        fields = ['title', 'image', 'place', 'date', 'level', 'price', 'number_of_days']
