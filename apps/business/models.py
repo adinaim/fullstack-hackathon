@@ -36,14 +36,22 @@ class BusinessProfile(models.Model):
 
 
 class Guide(models.Model):
-    # company_name = models.ForeignKey(
-    #     to=BusinessProfile,
-    #     on_delete=models.CASCADE,
-    #     verbose_name='Компания',
-    #     related_name='guides'
-    # )
+    company_name = models.ForeignKey(
+        to=BusinessProfile,
+        on_delete=models.CASCADE,
+        verbose_name='Компания',
+        related_name='guides'
+    )
     first_name = models.CharField(max_length=150, verbose_name='Имя')
     last_name = models.CharField(max_length=150, verbose_name='Фамилия')
+    slug = models.SlugField(max_length=200, primary_key=True, blank=True)
+
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.first_name)
+        return super().save(*args, **kwargs)
+   
 
     def __str__(self) -> str:
         return f'{self.first_name} {self.last_name}'
@@ -82,11 +90,11 @@ class Tour(models.Model):
     title = models.CharField(max_length=100, verbose_name='Название тура')
     slug = models.SlugField(max_length=200, primary_key=True, blank=True)
 
-    # company_name = models.ForeignKey(
-    #     to=BusinessProfile,
-    #     on_delete=models.CASCADE,
-    #     verbose_name='Компания'
-    # )
+    company_name = models.ForeignKey(
+        to=BusinessProfile,
+        on_delete=models.CASCADE,
+        verbose_name='Компания'
+    )
     guide = models.ForeignKey(
         to=Guide,
         on_delete=models.CASCADE,
@@ -103,6 +111,11 @@ class Tour(models.Model):
 
     def __str__(self) -> str:
         return self.title
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.title)
+        return super().save(*args, **kwargs)
 
     class Meta:
         verbose_name = 'Тур'
