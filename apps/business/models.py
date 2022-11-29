@@ -7,7 +7,6 @@ User = get_user_model()
 
 
 class BusinessProfile(models.Model):
-
     user = models.ForeignKey(
         to=User,
         on_delete=models.CASCADE,
@@ -44,7 +43,6 @@ class Guide(models.Model):
     first_name = models.CharField(max_length=150, verbose_name='Имя')
     last_name = models.CharField(max_length=150, verbose_name='Фамилия')
     slug = models.SlugField(max_length=200, primary_key=True, blank=True)
-
 
     def save(self, *args, **kwargs):
         if not self.slug:
