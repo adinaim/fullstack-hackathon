@@ -49,16 +49,15 @@ class BusinessProfileSerializer(serializers.ModelSerializer):
         model = BusinessProfile
         fields = '__all__'
 
-    # def to_representation(self, instance):
-    #     rep =  super().to_representation(instance)
-    #     rep['guide'] = GuideListSeriaizer(
-    #         instance.guides.all(), many=True
-    #     )
-    #     return rep
-    #     # rep['tour'] = TourListSerializer(
-    #     #     instance.title.all(), many=True
-    #     # )
-
+    def to_representation(self, instance):          # не показывает
+        rep =  super().to_representation(instance)
+        rep['guides'] = GuideListSeriaizer(
+            instance.guides.all(), many=True
+        ).data
+        return rep
+        # rep['tour'] = TourListSerializer(
+        #     instance.title.all(), many=True
+        # )
 
 
 class BusinessProfileListSerializer(serializers.ModelSerializer):
@@ -69,15 +68,19 @@ class BusinessProfileListSerializer(serializers.ModelSerializer):
 
 
 class GuideCreateSerializer(serializers.ModelSerializer):
+    # user = serializers.ReadOnlyField(
+    #     source='user.username',
+    #     default=serializers.CurrentUserDefault()
+    # )
 
     class Meta:
         model = Guide 
         fields = '__all__'
 
-    
     # company_name = serializers.ReadOnlyField(
     #     source='company_name.slug'
     # )
+
     first_name = serializers.CharField(max_length=100)
     last_name = serializers.CharField(max_length=100)
 
