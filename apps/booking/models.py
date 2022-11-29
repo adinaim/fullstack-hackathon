@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.auth import get_user_model
 
-from apps.business.models import BusinessProfile
+from apps.business.models import Tour
 
 User = get_user_model()
 
@@ -17,7 +17,7 @@ class TourPurchase(models.Model):
         related_name='orders'
     )
     tour = models.ManyToManyField(
-        to=BusinessProfile,
+        to=Tour,
         through='OrderItems',
     )
     order_id = models.CharField(max_length=58, blank=True)
@@ -28,12 +28,12 @@ class TourPurchase(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f'Order #{self.order_id}'
+        return f'Заказ №{self.order_id}'
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
         if not self.order_id:
-            self.order_id = str(self.user.username) + '-' + (str(self.created_at))[5:16].replace(':', '-').replace(' ', '-')
+            self.order_id = str(self.user.username) + '-' + (str(self.created_at))[9:16].replace(':', '-').replace(' ', '-')
         return self.order_id
 
     class Meta:
@@ -48,7 +48,7 @@ class TourItems(models.Model):
         related_name='items'
     )
     tour = models.ForeignKey(
-        to=BusinessProfile,
+        to=Tour,
         on_delete=models.RESTRICT,  # какие on delete еще есть
         related_name='items'
     )

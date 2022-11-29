@@ -65,7 +65,7 @@ class TourPurchaseSerializer(serializers.ModelSerializer):
         return order
 
 
-class OrderHistorySerializer(serializers.ModelSerializer):
+class PurchaseHistorySerializer(serializers.ModelSerializer):
 
     # url = serializers.ReadOnlyField(source='order.get_absolute_url')
     # book = serializers.ReadOnlyField(source='order.book')
