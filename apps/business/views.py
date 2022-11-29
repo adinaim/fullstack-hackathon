@@ -30,7 +30,7 @@ from .serializers import (
 #             return super().get_permissions()
 
 
-class BusinessProfileViewSet(ModelViewSet):    # update - запрашивает поле user
+class BusinessProfileViewSet(ModelViewSet):    # update - запрашивает поле user - put
     queryset = BusinessProfile.objects.all()
     serializer_class = BusinessProfileSerializer
 
@@ -59,9 +59,12 @@ class BusinessProfileViewSet(ModelViewSet):    # update - запрашивает
 
 
 
-class GuideViewSet(ModelViewSet):
+class GuideViewSet(ModelViewSet):      # update - user - 
     queryset = Guide.objects.all()
     serializer_class = GuideSeriaizer
+
+    # def perform_create(self, serializer):
+    #     serializer.save(user=self.request.user)
 
     def get_serializer_class(self):
         if self.action == 'list':
