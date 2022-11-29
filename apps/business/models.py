@@ -11,10 +11,9 @@ class BusinessProfile(models.Model):
     user = models.ForeignKey(
         to=User,
         on_delete=models.CASCADE,
-        related_name='profile',
+        related_name='profile'
     )
-    title = models.CharField(max_length=100, verbose_name='Название компании', unique=True)#, primary_key=True)
-    slug = models.SlugField(max_length=200, primary_key=True, blank=True)
+    title = models.CharField(max_length=100, verbose_name='Название компании', unique=True)
     image = models.ImageField(upload_to='media/business_profile_images')
     desc = models.CharField(max_length=200, verbose_name='О компании')
     phone = models.CharField(max_length=13, verbose_name='Номер телефона')
@@ -26,7 +25,6 @@ class BusinessProfile(models.Model):
             self.slug = slugify(self.title)
         return super().save(*args, **kwargs)
    
-
     def __str__(self) -> str:
         return self.title
 
@@ -49,10 +47,9 @@ class Guide(models.Model):
 
     def save(self, *args, **kwargs):
         if not self.slug:
-            self.slug = slugify(self.first_name)
+            self.slug = slugify(str(self.first_name + '-' + self.last_name))
         return super().save(*args, **kwargs)
    
-
     def __str__(self) -> str:
         return f'{self.first_name} {self.last_name}'
 
@@ -63,32 +60,31 @@ class Guide(models.Model):
 
 class Tour(models.Model):
 
-    PEOPLE_CHOISES = (
-        (1, '1'),
-        (2, '2'),
-        (3, '3'),
-        (4, '4'),
-        (5, '5'),
-        (6, '6'),
-        (7, '8'),
-        (9, '9'),
-        (10, '10'),
-        (11, '11'),
-        (12, '12'),
-        (13, '13'),
-        (14, '14'),
-        (15, '15'), 
-    )
+    # PEOPLE_CHOICES = (
+    #     (1, '1'),
+    #     (2, '2'),
+    #     (3, '3'),
+    #     (4, '4'),
+    #     (5, '5'),
+    #     (6, '6'),
+    #     (7, '8'),
+    #     (9, '9'),
+    #     (10, '10'),
+    #     (11, '11'),
+    #     (12, '12'),
+    #     (13, '13'),
+    #     (14, '14'),
+    #     (15, '15'), 
+    # )
 
-    LEVEL_CHOISES = (
+    LEVEL_CHOICES = (
         ('easy', 'легкий'),
         ('medium', 'средний'),
         ('hard', 'сложный')
     )
 
-
     title = models.CharField(max_length=100, verbose_name='Название тура')
-    slug = models.SlugField(max_length=200, primary_key=True, blank=True)
+    slug = models.SlugField(max_length=120, primary_key=True, blank=True)
 
     company_name = models.ForeignKey(
         to=BusinessProfile,
@@ -102,12 +98,13 @@ class Tour(models.Model):
     )
     image = models.ImageField(upload_to='media/tour_image')
     place = models.CharField(max_length=100, verbose_name='Место')
-    date = models.DateField(verbose_name='Дата')
-    price = models.PositiveIntegerField(verbose_name='Цена')
-    people_count = models.CharField(max_length=2, choices=PEOPLE_CHOISES, verbose_name='Количество человек')
+    # date = models.DateField(verbose_name='Дата')
+    price_som = models.PositiveSmallIntegerField(verbose_name='Цена в национальной валюте')
+    price_usd = models.PositiveSmallIntegerField(verbose_name='Цена в USD', blank=True)
+    # people_count = models.CharField(max_length=2, choices=PEOPLE_CHOICES, verbose_name='Количество человек')
     desc = models.CharField(max_length=150)
     number_of_days = models.PositiveIntegerField()
-    level = models.CharField(max_length=8, choices=LEVEL_CHOISES, verbose_name='Уровень')
+    level = models.CharField(max_length=8, choices=LEVEL_CHOICES, verbose_name='Уровень')
 
     def __str__(self) -> str:
         return self.title
@@ -115,6 +112,8 @@ class Tour(models.Model):
     def save(self, *args, **kwargs):
         if not self.slug:
             self.slug = slugify(self.title)
+        if not self.price_usd:
+            self.price_usd = round(self.price_som / 84, 1)
         return super().save(*args, **kwargs)
 
     class Meta:
@@ -122,10 +121,33 @@ class Tour(models.Model):
         verbose_name_plural = 'Туры'
 
 
+class ConcreteTour(models.Model):
+    tour = models.ForeignKey(
+        to=Tour,
+        on_delete=models.CASCADE,
+        verbose_name='Тур'
+    )
+    date = models.DateField()
+    people_count = models.PositiveSmallIntegerField(verbose_name='Количество мест на тур')
+
+    class Meta:
+        verbose_name = 'Конкретный тур'
+        verbose_name_plural = 'Конкретные туры'
+
+
 class TourImage(models.Model):
-    image = models.ImageField(upload_to='media')
+    image = models.ImageField(upload_to='media/tour_image')
     tour = models.ForeignKey(
         to=Tour,
         on_delete=models.CASCADE,
         related_name='tour_images',
+    )
+
+
+class BusinessImage(models.Model):
+    image = models.ImageField(upload_to='media/tour_image')
+    business = models.ForeignKey(
+        to=BusinessProfile,
+        on_delete=models.CASCADE,
+        related_name='bus_images'
     )

@@ -6,6 +6,7 @@ from .models import (
     Guide,
     Tour,
     TourImage,
+    BusinessImage
 )
 from apps.account.utils import normalize_phone
 
@@ -16,13 +17,12 @@ class BusinessProfileCreateSerializer(serializers.ModelSerializer):
         source='user.username',
         default=serializers.CurrentUserDefault()
     )
-    title = serializers.CharField(max_length=100)
-    image = serializers.ImageField()#upload_to='media/business_profile_images')
-    desc = serializers.CharField(max_length=200)
-    phone = serializers.CharField(max_length=13)
-    email = serializers.EmailField(max_length=150)
-    address = serializers.CharField(max_length=150)
-
+    # title = serializers.CharField(max_length=100)
+    # image = serializers.ImageField()#upload_to='media/business_profile_images')
+    # desc = serializers.CharField(max_length=200)
+    # phone = serializers.CharField(max_length=13)
+    # email = serializers.EmailField(max_length=150)
+    # address = serializers.CharField(max_length=150)
 
     class Meta:
         model = BusinessProfile
@@ -38,7 +38,12 @@ class BusinessProfileCreateSerializer(serializers.ModelSerializer):
         profile = BusinessProfile.objects.create(**validated_data)
         return profile
       
-  
+
+class BusinessImageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = BusinessImage
+        fields = 'image',
+
 
 class BusinessProfileSerializer(serializers.ModelSerializer):
 
