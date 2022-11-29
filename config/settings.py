@@ -55,6 +55,7 @@ INSTALLED_APPS = [
     'apps.business',
     # 'apps.booking',
     'apps.bio',
+    'apps.tour',
     # 'apps.review',
 ]
 
