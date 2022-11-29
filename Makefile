@@ -6,7 +6,6 @@ server:
 	python3 manage.py runserver
 
 super:
-	dropdb tour_api
 	python3 manage.py createsuperuser
 
 db:
