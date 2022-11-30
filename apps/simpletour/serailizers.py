@@ -24,11 +24,13 @@ class TourCreateSerializer(serializers.ModelSerializer):
         TourImage.objects.bulk_create(images)
         return tour
 
-    # def to_representation(self, instance):
-    #     representation = super().to_representation(instance)
-    #     representation['comments'] = CommentSerializer(
-    #         instance.comments.all(), many=True
-    #     ).data
+    def to_representation(self, instance):
+        rep = super().to_representation(instance)
+        rep['image'] = TourImageSerializer(
+            instance.tour_images.all(),
+            many=True
+        ).data 
+        return rep
 
     
 class TourSerializer(serializers.ModelSerializer):
@@ -41,3 +43,9 @@ class TourListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Tour
         fields = ['title', 'image', 'place', 'level', 'number_of_days', 'price']
+
+
+class TourImageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = TourImage
+        fields = 'image'
