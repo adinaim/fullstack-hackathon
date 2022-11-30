@@ -76,25 +76,6 @@ class BusinessView(APIView):
                 status=status.HTTP_201_CREATED
             )
 
-    def put(self, request, slug):   # требует передавать поля
-        # user = request.data.get('user')
-        bus = BusinessProfile.objects.get(slug=slug)
-        serializer = BusinessProfileSerializer(bus, data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-    def delete(self, request: Request, slug):
-        # user = request.data.get('user')
-        profile = BusinessProfile.objects.get(slug=slug).delete()
-        # username = request.user.username
-        # User.objects.get(username=username).delete()
-        return Response(
-            'Ваш бизнес профиль удален.',
-            status=status.HTTP_204_NO_CONTENT
-        )
-
 
 class BusinessRetrieveView(APIView):
     def get(self, request, slug):
@@ -104,6 +85,29 @@ class BusinessRetrieveView(APIView):
             return Response(serializer)
         except BusinessProfile.DoesNotExist:
             raise Http404
+
+
+class BusinessUpdateView(APIView):
+    def patch(self, request, slug):   # требует передавать поля
+        # user = request.data.get('user')
+        bus = BusinessProfile.objects.get(slug=slug)
+        serializer = BusinessProfileSerializer(bus, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class BusinessDeleteView(APIView):
+    def delete(self, request: Request, slug):
+        # user = request.data.get('user')
+        profile = BusinessProfile.objects.get(slug=slug).delete()
+        # username = request.user.username
+        # User.objects.get(username=username).delete()
+        return Response(
+            'Ваш бизнес профиль удален.',
+            status=status.HTTP_204_NO_CONTENT
+        )
 
 
 class GuideViewSet(ModelViewSet):      # update - user - 
@@ -124,17 +128,17 @@ class GuideViewSet(ModelViewSet):      # update - user -
         if self.action in ['list', 'retrieve']:
             self.permission_classes = [AllowAny]
         if self.action in ['create']:
-            self.permission_classes = [IsAuthenticated, IsOwner]
+            self.permission_classes = [IsAuthenticated] #, IsOwner]
         if self.action in ['destroy']:
             self.permission_classes = [AllowAny] #[IsOwner]#, IsAdminUser]
         if self.action in ['update', 'partial_update']:
             self.permission_classes = [AllowAny] #[IsOwner]
         return super().get_permissions()
 
-    def get_serializer_context(self):
-        context = super().get_serializer_context()
-        context['request'] = self.request
-        return context
+    # def get_serializer_context(self):
+    #     context = super().get_serializer_context()
+    #     context['request'] = self.request
+    #     return context
 
 
 # class GuideView(APIView):
