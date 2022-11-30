@@ -1,8 +1,6 @@
 from rest_framework import serializers
 
-
-
-from .models import Tour, TourImage, ConcreteTour
+from .models import Tour, TourImage
 
 
 class TourCreateSerializer(serializers.ModelSerializer):
@@ -42,29 +40,4 @@ class TourSerializer(serializers.ModelSerializer):
 class TourListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Tour
-        fields = ['title', 'image', 'place', 'level', 'number_of_days']
-
-
-class ConcreteTourCreateSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = ConcreteTour
-        fields = '__all__'
-
-    def create(self, validated_data):
-        # return super().create(validated_data)
-        tour = ConcreteTour.objects.create(**validated_data)
-        return tour
-
-
-class ConcreteTourSerializer(serializers.ModelSerializer):
-     class Meta:
-        model = ConcreteTour
-        fields = '__all__'
-
-
-class ConcreteTourListSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = ConcreteTour
-        fields = '__all__'
-
-    
+        fields = ['title', 'image', 'place', 'level', 'number_of_days', 'price']
