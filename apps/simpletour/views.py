@@ -14,8 +14,6 @@ class TourViewSet(ModelViewSet):
     queryset = Tour.objects.all()
     serializer_class = TourSerializer
 
-    # def perform_create(self, serializer):
-    #     serializer.save(user=self.request.user)
 
     def get_serializer_class(self):
         if self.action == 'list':
@@ -32,5 +30,5 @@ class TourViewSet(ModelViewSet):
         if self.action in ['destroy']:
             self.permission_classes = [IsOwner, IsAdminUser]
         if self.action in ['update', 'partial_update', 'retrieve']:
-            self.permission_classes = [IsOwner]
+            self.permission_classes = [AllowAny]
         return super().get_permissions()
