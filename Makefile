@@ -9,5 +9,5 @@ super:
 	python3 manage.py createsuperuser
 
 db:
-	# dropdb tour_api
+	dropdb tour_api
 	createdb tour_api

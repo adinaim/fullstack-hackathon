@@ -9,7 +9,6 @@ from .models import (
 from apps.account.utils import normalize_phone
 
 
-
 class BusinessProfileCreateSerializer(serializers.ModelSerializer):
     user = serializers.ReadOnlyField(
         source='user.username',
@@ -44,6 +43,7 @@ class BusinessImageSerializer(serializers.ModelSerializer):
 
 
 class BusinessProfileSerializer(serializers.ModelSerializer):
+    user = serializers.ReadOnlyField(source='user.username')
 
     class Meta:
         model = BusinessProfile
@@ -51,7 +51,7 @@ class BusinessProfileSerializer(serializers.ModelSerializer):
 
     def to_representation(self, instance):          # не показывает
         rep =  super().to_representation(instance)
-        rep['guides'] = GuideListSeriaizer(
+        rep['guides'] = GuideListSerializer(
             instance.guides.all(), many=True
         ).data
         return rep
@@ -67,41 +67,32 @@ class BusinessProfileListSerializer(serializers.ModelSerializer):
         fields = ['title', 'phone', 'email', 'address']
 
 
-class GuideCreateSerializer(serializers.ModelSerializer):
-    # user = serializers.ReadOnlyField(
-    #     source='user.username',
-    #     default=serializers.CurrentUserDefault()
-    # )
+class GuideSerializer(serializers.ModelSerializer):
+    # user = serializers.ReadOnlyField(source='company_name.user')
 
     class Meta:
         model = Guide 
         fields = '__all__'
 
+    # company_name = serializers.ReadOnlyField(source='company_name.pk')
     # company_name = serializers.ReadOnlyField(
     #     source='company_name.slug'
     # )
 
-    first_name = serializers.CharField(max_length=100)
-    last_name = serializers.CharField(max_length=100)
-
-    def validate_phone(self, phone):
-        phone = normalize_phone(phone)
-        if len(phone) != 13:
-            raise serializers.ValidationError('Invalid phone format!')
-        return phone  
+    # first_name = serializers.CharField(max_length=100)
+    # last_name = serializers.CharField(max_length=100)
 
     def create(self, validated_data):
         guide = Guide.objects.create(**validated_data)
         return guide
 
+    def validate(self, attrs):
+        user = self.context['request'].user
+        attrs['user'] = user
+        return attrs
 
-class GuideSeriaizer(serializers.ModelSerializer):
+
+class GuideListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Guide
-        fields = '__all__'
-
-
-class GuideListSeriaizer(serializers.ModelSerializer):
-    class Meta:
-        model = Guide
-        fields = ['first_name', 'last_name']
+        exclude = ['slug', 'company_name']

@@ -33,6 +33,15 @@ class BusinessProfile(models.Model):
         verbose_name_plural = 'Профили компаний'
 
 
+class BusinessImage(models.Model):
+    image = models.ImageField(upload_to='media/tour_image')
+    business = models.ForeignKey(
+        to=BusinessProfile,
+        on_delete=models.CASCADE,
+        related_name='bus_images'
+    )
+
+
 class Guide(models.Model):
     company_name = models.ForeignKey(
         to=BusinessProfile,
@@ -42,25 +51,18 @@ class Guide(models.Model):
     )
     first_name = models.CharField(max_length=150, verbose_name='Имя')
     last_name = models.CharField(max_length=150, verbose_name='Фамилия')
+    image = models.ImageField()
+    age = models.PositiveSmallIntegerField
     slug = models.SlugField(max_length=200, primary_key=True, blank=True)
 
     def save(self, *args, **kwargs):
         if not self.slug:
             self.slug = slugify(str(self.first_name + '-' + self.last_name))
         return super().save(*args, **kwargs)
-   
+    
     def __str__(self) -> str:
         return f'{self.first_name} {self.last_name}'
 
     class Meta:
         verbose_name = 'Гид'
         verbose_name_plural = 'Гиды'
-
-
-class BusinessImage(models.Model):
-    image = models.ImageField(upload_to='media/tour_image')
-    business = models.ForeignKey(
-        to=BusinessProfile,
-        on_delete=models.CASCADE,
-        related_name='bus_images'
-    )
