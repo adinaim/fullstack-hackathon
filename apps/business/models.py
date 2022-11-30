@@ -21,8 +21,8 @@ class BusinessProfile(models.Model):
     slug = models.SlugField(max_length=200, primary_key=True, blank=True)
 
     def save(self, *args, **kwargs):
-        if not self.slug:
-            self.slug = slugify(self.title)
+        # if not self.slug:
+        self.slug = slugify(self.title)
         return super().save(*args, **kwargs)
    
     def __str__(self) -> str:

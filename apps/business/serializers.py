@@ -86,10 +86,10 @@ class GuideSerializer(serializers.ModelSerializer):
         guide = Guide.objects.create(**validated_data)
         return guide
 
-    def validate(self, attrs):
-        user = self.context['request'].user
-        attrs['user'] = user
-        return attrs
+    # def validate(self, attrs):
+    #     user = self.context['request'].user
+    #     attrs['user'] = user
+    #     return attrs
 
 
 class GuideListSerializer(serializers.ModelSerializer):
