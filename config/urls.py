@@ -29,5 +29,8 @@ urlpatterns = [
    path('api/user-profile/', include('apps.bio.urls')),
    path('api/tour-purchase/', include('apps.booking.urls')),
    path('api/auth/', include('drf_social_oauth2.urls', namespace='drf')),
-   path('api/', include('apps.tour.urls'))
+   # path('api/', include('apps.tour.urls'))
+   path('api/tour/', include('apps.simpletour.urls'))
+
+
 ]

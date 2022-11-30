@@ -4,6 +4,9 @@ from django.urls import path
 from .views import (
     TourView,
     # TourListView,
+    # TourRetrieveView,
+    ConcreteTourView,
+    ConcreteTourDeleteView,
 )
 
 # router = DefaultRouter()
@@ -15,7 +18,8 @@ from .views import (
 urlpatterns = [ 
     path('tour/', TourView.as_view(), name='tour'),
     path('tour/<str:slug>/', TourView.as_view(), name='tour'),
-
-    # path('list/', TourListView.as_view(), name='list-tour')
+    # path('tour-retrive/<str:slug>/', TourRetrieveView.as_view(), name='tour-retrieve')
+    path('concrete-tour/', ConcreteTourView.as_view(), name='consrete-tour'),
+    path('delete-concrete-tour/', ConcreteTourDeleteView.as_view(), name='delete-concrete-view'),
+    path('concrete-tour/<str:slug>/', ConcreteTourView.as_view(), name='consrete-tour'),
 ]
-# urlpatterns += router.urls
