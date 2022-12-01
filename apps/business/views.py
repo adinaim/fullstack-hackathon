@@ -76,6 +76,22 @@ class BusinessView(APIView):
                 status=status.HTTP_201_CREATED
             )
 
+    def get_object(self, slug):
+        try:
+            return BusinessProfile.objects.get(slug=slug)
+        except BusinessProfile.DoesNotExist:
+            raise Http404
+
+    def put(self, request, slug):   # требует передавать поля
+        # user = request.data.get('user')
+        # bus = BusinessProfile.objects.get(slug=slug)
+        bus = self.get_object(slug)
+        serializer = BusinessProfileSerializer(instance=bus, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save(user=self.request.user)
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 class BusinessRetrieveView(APIView):
     def get(self, request, slug):
@@ -87,15 +103,30 @@ class BusinessRetrieveView(APIView):
             raise Http404
 
 
-class BusinessUpdateView(APIView):
-    def patch(self, request, slug):   # требует передавать поля
-        # user = request.data.get('user')
-        bus = BusinessProfile.objects.get(slug=slug)
-        serializer = BusinessProfileSerializer(bus, data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+# class BusinessUpdateView(APIView):
+#     def get_object(self, pk):
+#         try:
+#             return BusinessProfile.objects.get(slug=pk)
+#         except BusinessProfile.DoesNotExist:
+#             raise Http404
+
+    # def put(self, request, pk):
+    #     book = self.get_object(pk)
+    #     serializer = BookSerilizer(book, data=request.data)
+    #     if serializer.is_valid():
+    #         serializer.save()
+    #         return Response(serializer.data)
+    #     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    # def put(self, request, pk):   # требует передавать поля
+    #     # user = request.data.get('user')
+    #     # bus = BusinessProfile.objects.get(slug=slug)
+    #     bus = self.get_object(pk)
+    #     serializer = BusinessProfileSerializer(instance=bus, data=request.data, partial=True)
+    #     if serializer.is_valid():
+    #         serializer.save()
+    #         return Response(serializer.data)
+    #     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class BusinessDeleteView(APIView):
@@ -128,17 +159,17 @@ class GuideViewSet(ModelViewSet):      # update - user -
         if self.action in ['list', 'retrieve']:
             self.permission_classes = [AllowAny]
         if self.action in ['create']:
-            self.permission_classes = [IsAuthenticated] #, IsOwner]
+            self.permission_classes = [IsAuthenticated]
         if self.action in ['destroy']:
-            self.permission_classes = [AllowAny] #[IsOwner]#, IsAdminUser]
+            self.permission_classes = [IsOwner]#, IsAdminUser]
         if self.action in ['update', 'partial_update']:
             self.permission_classes = [AllowAny] #[IsOwner]
         return super().get_permissions()
 
-    # def get_serializer_context(self):
-    #     context = super().get_serializer_context()
-    #     context['request'] = self.request
-    #     return context
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
+        context['request'] = self.request
+        return context
 
 
 # class GuideView(APIView):

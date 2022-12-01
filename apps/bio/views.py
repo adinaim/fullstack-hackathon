@@ -36,7 +36,7 @@ class ProfileViewSet(ModelViewSet):
         if self.action in ['create']:
             self.permission_classes = [IsAuthenticated]
         if self.action in ['destroy']:
-            self.permission_classes = [IsOwner, IsAdminUser]
+            self.permission_classes in [IsOwner, IsAdminUser]
         if self.action in ['update', 'partial_update', 'retrieve']:
             self.permission_classes = [IsOwner]
         return super().get_permissions()

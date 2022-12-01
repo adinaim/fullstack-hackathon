@@ -68,7 +68,8 @@ class BusinessProfileListSerializer(serializers.ModelSerializer):
 
 
 class GuideSerializer(serializers.ModelSerializer):
-    # user = serializers.ReadOnlyField(source='company_name.user')
+    user = serializers.ReadOnlyField(source='user.username')
+    company = serializers.ReadOnlyField(source='company_name.title')
 
     class Meta:
         model = Guide 
@@ -86,13 +87,16 @@ class GuideSerializer(serializers.ModelSerializer):
         guide = Guide.objects.create(**validated_data)
         return guide
 
-    # def validate(self, attrs):
-    #     user = self.context['request'].user
-    #     attrs['user'] = user
-    #     return attrs
+    def validate(self, attrs):
+        user = self.context['request'].user
+        attrs['user'] = user
+        return attrs
 
 
 class GuideListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Guide
         exclude = ['slug', 'company_name']
+
+        # return request.user.is_authenticated and request.user == obj.user
+        # AttributeError: 'Guide' object has no attribute 'user'
