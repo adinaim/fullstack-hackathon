@@ -16,3 +16,4 @@ redis
 oauth2_provider
 social-auth-app-django
 drf_social_oauth2
+django-cors-headers

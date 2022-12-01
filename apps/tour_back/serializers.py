@@ -7,7 +7,7 @@ from .models import Tour, TourImage, ConcreteTour
 
 
 class TourCreateSerializer(serializers.ModelSerializer):
-    user = serializers.ReadOnlyField(source='user.username')
+    user = serializers.ReadOnlyField(source='user.username', default=serializers.CurrentUserDefault())
 
 
     class Meta:
@@ -20,10 +20,10 @@ class TourCreateSerializer(serializers.ModelSerializer):
     )
 
 
-    def validate(self, attrs):
-        user = request.data.get('user')
-        attrs['user'] = user
-        return attrs
+    # def validate(self, attrs):
+    #     user = request.data.get('user')
+    #     attrs['user'] = user
+    #     return attrs
 
     def create(self, validated_data):
         avatar_carousel = validated_data.pop('tour_image_carousel')

@@ -54,12 +54,16 @@ INSTALLED_APPS = [
     'drf_social_oauth2',
 
     'apps.account',
+
     'apps.business',
-    'apps.booking',
     'apps.bio',
-    'apps.tour',
-    # 'apps.review',
-    # 'apps.simpletour',
+
+
+    'apps.booking_front',
+    'apps.booking_back',
+
+    'apps.tour_back',
+    'apps.tour_front',
 ]
 
 MIDDLEWARE = [

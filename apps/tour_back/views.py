@@ -14,7 +14,7 @@ from slugify import slugify
 
 from django.contrib.auth import get_user_model
 
-from apps.tour.models import Tour, ConcreteTour
+from apps.tour_back.models import Tour, ConcreteTour
 
 from .serializers import (
     TourCreateSerializer,
@@ -48,10 +48,10 @@ class TourView(APIView):
             )
 
     
-    def get_serializer_context(self):
-        context = super().get_serializer_context()
-        context['request'] = self.request
-        return context
+    # def get_serializer_context(self):
+    #     context = super().get_serializer_context()
+    #     context['request'] = self.request
+    #     return context
 
     def get(self, request: Request):
         # tour = Tour.objects.filter(slug=tour).first()
