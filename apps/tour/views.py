@@ -25,13 +25,16 @@ from .serializers import (
     ConcreteTourCreateSerializer,
 )
 from apps.business.permissions import IsOwner
-
+from .permissions import IsCompany
 
 User = get_user_model()
 
 
 class TourView(APIView):
-    permission_classes = [IsAuthenticated, IsOwner]
+    
+    request = Tour.objects.all()
+
+    permission_classes = [IsAuthenticated, IsOwner]#IsCompany]
 
 
     def post(self, request: Request): 
@@ -43,6 +46,12 @@ class TourView(APIView):
                 'Тур успешно создан!',
                 status=status.HTTP_201_CREATED
             )
+
+    
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
+        context['request'] = self.request
+        return context
 
     def get(self, request: Request):
         # tour = Tour.objects.filter(slug=tour).first()
@@ -58,6 +67,26 @@ class TourView(APIView):
         except Tour.DoesNotExist:
             raise Http404
 
+    
+    
+
+
+class TourRetrieveUpdateDeleteView(APIView):
+
+    def get_object(self, slug):
+        try:
+            return ConcreteTour.objects.get(slug=slug)
+        except ConcreteTour.DoesNotExist:
+            raise Http404
+
+    def get(self, request, slug):
+        try:
+            tour = Tour.objects.filter(slug=slug)
+            serializer = TourSerializer(tour, many=True).data
+            return Response(serializer)
+        except Tour.DoesNotExist:
+            raise Http404
+
     def put(self, request, slug):
         tour= self.get_object(slug)
         serializer = TourSerializer(tour, data=request.data)
@@ -68,16 +97,14 @@ class TourView(APIView):
             serializer.save(user=self.request.user)
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
-# class TourRetrieveView(APIView):
-#     def get(self, request, slug):
-#         try:
-#             tour = Tour.objects.filter(slug=slug)
-#             serializer = TourSerializer(tour, many=True).data
-#             return Response(serializer)
-#         except Tour.DoesNotExist:
-#             raise Http404
+    
+    def delete(self, request: Request, slug):
+        tour = request.tour.slug
+        Tour.objects.get(tour=tour).delete()
+        return Response(
+            'Тур удален!',
+            status=status.HTTP_204_NO_CONTENT
+        )
 
 
 
@@ -98,6 +125,17 @@ class ConcreteTourView(APIView):
             serializer.data
         )
 
+
+
+class ConcreteTourDeleteUpdateView(APIView):
+    def delete(self, request: Request):
+        tour = request.tour.title
+        ConcreteTour.objects.get(tour=tour).delete()
+        return Response(
+            'Тур удален!',
+            status=status.HTTP_204_NO_CONTENT
+        )
+    
     def get_object(self, slug):
         try:
             return ConcreteTour.objects.get(slug=slug)
@@ -111,16 +149,6 @@ class ConcreteTourView(APIView):
             serializer.save(user=self.request.user)
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
-class ConcreteTourDeleteView(APIView):
-    def destroy(self, request: Request):
-        tour = request.tour.title
-        ConcreteTour.objects.get(tour=tour).delete()
-        return Response(
-            'Тур удален!',
-            status=status.HTTP_204_NO_CONTENT
-        )
 
 
 
