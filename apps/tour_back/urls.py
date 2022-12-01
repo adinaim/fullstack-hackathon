@@ -14,7 +14,6 @@ from .views import (
 # # router.register('tour', TourViewSet, 'tour')
 
 
-
 urlpatterns = [ 
 
     path('concrete-tour/<str:slug>/', ConcreteTourDeleteUpdateView.as_view(), name='concrete-tour'),
