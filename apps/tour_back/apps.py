@@ -1,6 +1,6 @@
 from django.apps import AppConfig
 
 
-class SimpletourConfig(AppConfig):
+class TourConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
-    name = 'apps.simpletour'
+    name = 'apps.tour_back'

@@ -14,7 +14,7 @@ from slugify import slugify
 
 from django.contrib.auth import get_user_model
 
-from apps.tour.models import Tour, ConcreteTour
+from apps.tour_back.models import Tour, ConcreteTour
 
 from .serializers import (
     TourCreateSerializer,
