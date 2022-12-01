@@ -1,3 +1,4 @@
+from urllib import request
 from rest_framework import serializers
 
 
@@ -6,6 +7,8 @@ from .models import Tour, TourImage, ConcreteTour
 
 
 class TourCreateSerializer(serializers.ModelSerializer):
+    user = serializers.ReadOnlyField(source='user.username')
+
 
     class Meta:
         model = Tour
@@ -17,6 +20,11 @@ class TourCreateSerializer(serializers.ModelSerializer):
     )
 
 
+    def validate(self, attrs):
+        user = request.data.get('user')
+        attrs['user'] = user
+        return attrs
+
     def create(self, validated_data):
         avatar_carousel = validated_data.pop('tour_image_carousel')
         tour = Tour.objects.create(**validated_data)
@@ -26,6 +34,10 @@ class TourCreateSerializer(serializers.ModelSerializer):
         TourImage.objects.bulk_create(images)
         return tour
 
+
+    
+
+        
     # def to_representation(self, instance):
     #     representation = super().to_representation(instance)
     #     representation['comments'] = CommentSerializer(
@@ -42,7 +54,7 @@ class TourSerializer(serializers.ModelSerializer):
 class TourListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Tour
-        fields = ['title', 'image', 'place', 'level', 'number_of_days']
+        fields = ['title', 'image', 'place', 'level', 'number_of_days', 'company_name', 'slug']
 
 
 class ConcreteTourCreateSerializer(serializers.ModelSerializer):

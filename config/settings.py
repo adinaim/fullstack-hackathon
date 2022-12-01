@@ -55,9 +55,9 @@ INSTALLED_APPS = [
     'apps.business',
     'apps.booking',
     'apps.bio',
-    # 'apps.tour',
+    'apps.tour',
     # 'apps.review',
-    'apps.simpletour',
+    # 'apps.simpletour',
 ]
 
 MIDDLEWARE = [

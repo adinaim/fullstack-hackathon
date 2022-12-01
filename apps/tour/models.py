@@ -1,8 +1,12 @@
 from django.db import models
 from slugify import slugify
 
+from django.contrib.auth import get_user_model
+
 from apps.business.models import BusinessProfile, Guide
 
+
+User = get_user_model()
 
 class Tour(models.Model):
 
@@ -15,11 +19,16 @@ class Tour(models.Model):
     title = models.CharField(max_length=100, verbose_name='Название тура')
     slug = models.SlugField(max_length=120, primary_key=True, blank=True)
 
+    user = models.ForeignKey(
+        to=User,
+        on_delete=models.CASCADE,
+        null=True
+    )
     company_name = models.ForeignKey(
         to=BusinessProfile,
         on_delete=models.CASCADE,
         verbose_name='Компания',
-        # related_name='tour'
+        related_name='company'
     )
     guide = models.ForeignKey(
         to=Guide,
