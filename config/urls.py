@@ -24,13 +24,20 @@ schema_view = get_schema_view(
 urlpatterns = [
    path('', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
    path('admin/', admin.site.urls),
-   path('api/account/', include('apps.account.urls')),
-   path('api/',include('apps.business.urls')),
-   path('api/user-profile/', include('apps.bio.urls')),
-   path('api/tour-purchase/', include('apps.booking.urls')),
    path('api/auth/', include('drf_social_oauth2.urls', namespace='drf')),
+
+   path('api/account/', include('apps.account.urls')),
+   path('api/user-profile/', include('apps.bio.urls')),
+
+   path('api/',include('apps.business.urls')),
+
+   path('api/tour/', include('apps.booking_front.urls')),
+   path('api/tour-back/', include('apps.booking_back.urls')),
+   
    path('api/travel/', include('apps.tour.urls')),
-   # path('api/tour_for_frontend/', include('apps.simpletour.urls')),
+
+   path('api/travel/', include('apps.tour_front.urls')),
+   path('api/travel/', include('apps.tour_back.urls')),
 
 
 ]

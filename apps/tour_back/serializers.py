@@ -8,6 +8,8 @@ from .models import Tour, TourImage, ConcreteTour
 
 class TourCreateSerializer(serializers.ModelSerializer):
     user = serializers.ReadOnlyField(source='user.username', default=serializers.CurrentUserDefault())
+    user = serializers.ReadOnlyField(source='user.username',
+        default=serializers.CurrentUserDefault())
 
 
     class Meta:
