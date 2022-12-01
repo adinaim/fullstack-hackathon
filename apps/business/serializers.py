@@ -68,7 +68,8 @@ class BusinessProfileListSerializer(serializers.ModelSerializer):
 
 
 class GuideSerializer(serializers.ModelSerializer):
-    # user = serializers.ReadOnlyField(source='company_name.user')
+    user = serializers.ReadOnlyField(source='user.username')
+    company = serializers.ReadOnlyField(source='company_name.title')
 
     class Meta:
         model = Guide 
@@ -96,3 +97,6 @@ class GuideListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Guide
         exclude = ['slug', 'company_name']
+
+        # return request.user.is_authenticated and request.user == obj.user
+        # AttributeError: 'Guide' object has no attribute 'user'
