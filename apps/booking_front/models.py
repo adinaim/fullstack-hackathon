@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.auth import get_user_model
 
-from apps.business.models import Guide
+from apps.tour_front.models import Tour
 
 User = get_user_model()
 
@@ -17,7 +17,7 @@ class TourPurchase(models.Model):
         related_name='orders'
     )
     tour = models.ManyToManyField(
-        to=Guide,
+        to=Tour,
         through='TourItems',
     )
     order_id = models.CharField(max_length=58, blank=True)
@@ -49,7 +49,7 @@ class TourItems(models.Model):
         null=True
     )
     tour = models.ForeignKey(
-        to=Guide,
+        to=Tour,
         on_delete=models.SET_NULL,  # какие on delete еще есть
         related_name='items',
         null=True

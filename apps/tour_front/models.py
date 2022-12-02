@@ -23,7 +23,7 @@ class Tour(models.Model):
         to=Guide,
         on_delete=models.CASCADE,
         verbose_name='Гид',
-        # related_name='tour'
+        related_name='tour'
     )
     image = models.ImageField(upload_to='media/tour_image')
     place = models.CharField(max_length=100, verbose_name='Место')

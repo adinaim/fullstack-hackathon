@@ -32,9 +32,9 @@ urlpatterns = [
    path('api/',include('apps.business.urls')),
 
    path('api/tour/', include('apps.booking_front.urls')),
-   path('api/tour-back/', include('apps.booking_back.urls')),
+   # path('api/tour-back/', include('apps.booking_back.urls')),
    
-   path('api/travel/', include('apps.tour.urls')),
+   # path('api/travel/', include('apps.tour.urls')),
 
    path('api/travel/', include('apps.tour_front.urls')),
    path('api/travel/', include('apps.tour_back.urls')),
