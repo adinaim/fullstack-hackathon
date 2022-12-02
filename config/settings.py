@@ -59,11 +59,9 @@ INSTALLED_APPS = [
     'apps.bio',
 
 
-    'apps.booking_front',
-    # 'apps.booking_back',
+    'apps.booking',
 
-    'apps.tour_back',
-    'apps.tour_front',
+    'apps.tour',
 ]
 
 MIDDLEWARE = [

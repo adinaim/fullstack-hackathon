@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.auth import get_user_model
 
-from apps.tour_front.models import Tour
+from apps.tour.models import Tour
 
 User = get_user_model()
 
