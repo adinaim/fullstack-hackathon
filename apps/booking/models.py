@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.auth import get_user_model
 
-from apps.tour.models import Tour
+from apps.tour.models import ConcreteTour
 
 User = get_user_model()
 
@@ -17,18 +17,18 @@ class TourPurchase(models.Model):
         related_name='orders'
     )
     tour = models.ManyToManyField(
-        to=Tour,
+        to=ConcreteTour,
         through='TourItems',
     )
     order_id = models.CharField(max_length=58, blank=True)
-    people_num = models.PositiveIntegerField()
+    # people_num = models.PositiveIntegerField()
     total_sum = models.DecimalField(max_digits=14, decimal_places=2, default=0)
     status = models.CharField(max_length=9, choices=STATUS_CHOICES, default='pending')
     # address = models.CharField(max_length=200)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f'Заказ №{self.order_id}'
+        return f'Заказ № {self.order_id}'
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
@@ -49,7 +49,7 @@ class TourItems(models.Model):
         null=True
     )
     tour = models.ForeignKey(
-        to=Tour,
+        to=ConcreteTour,
         on_delete=models.SET_NULL,  # какие on delete еще есть
         related_name='items',
         null=True
