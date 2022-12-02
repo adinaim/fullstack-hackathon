@@ -10,7 +10,7 @@ from .models import TourPurchase
 from .serializers import (
     # TourItemsSerializer,
     TourPurchaseSerializer,
-    # OrderHistorySerializer,
+    PurchaseHistorySerializer,
 )
 
 
@@ -28,13 +28,13 @@ class OrderViewSet(ModelViewSet):
         return context
 
 
-# class OrderHistoryView(ListAPIView):
-#     serializer_class = OrderHistorySerializer
-#     permission_classes = [IsAuthenticated]
+class OrderHistoryView(ListAPIView):
+    serializer_class = PurchaseHistorySerializer
+    permission_classes = [IsAuthenticated]
 
-#     def get_queryset(self):
-#         user = self.request.user
-#         return TourPurchase.objects.filter(user=user)
+    def get_queryset(self):
+        user = self.request.user
+        return TourPurchase.objects.filter(user=user)
        
 
 # class PurchaseCreateView(CreateAPIView):

@@ -60,7 +60,7 @@ INSTALLED_APPS = [
 
 
     'apps.booking_front',
-    'apps.booking_back',
+    # 'apps.booking_back',
 
     'apps.tour_back',
     'apps.tour_front',
