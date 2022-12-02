@@ -1,6 +1,6 @@
 from django.apps import AppConfig
 
 
-class TourConfig(AppConfig):
+class ReviewConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
-    name = 'apps.tour_back'
+    name = 'apps.review'
