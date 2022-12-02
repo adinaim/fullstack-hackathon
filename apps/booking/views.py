@@ -15,6 +15,7 @@ from .serializers import (
 
 
 class OrderViewSet(ModelViewSet):
+    # queryset =  
     serializer_class = TourPurchaseSerializer
     permission_classes = [IsAuthenticated]   
 

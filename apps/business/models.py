@@ -59,7 +59,7 @@ class Guide(models.Model):
     first_name = models.CharField(max_length=150, verbose_name='Имя')
     last_name = models.CharField(max_length=150, verbose_name='Фамилия')
     image = models.ImageField()
-    age = models.PositiveSmallIntegerField
+    age = models.PositiveSmallIntegerField()
     slug = models.SlugField(max_length=200, primary_key=True, blank=True)
 
     def save(self, *args, **kwargs):
