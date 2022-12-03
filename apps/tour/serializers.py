@@ -2,6 +2,7 @@ from urllib import request
 from rest_framework import serializers
 from django.db.models import Avg
 from apps.review.serializers import CommentSerializer
+from django.contrib.auth import get_user_model
 
 from .models import Tour, TourImage, ConcreteTour
 from apps.business.models import BusinessProfile
