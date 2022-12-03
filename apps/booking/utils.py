@@ -29,6 +29,8 @@ def cashback(context, order, total_sum):
             cashback=10)
 
 
+# чтоб отнималось количество занятых мест
+# проверки на количество свободынх мест
 
 # отсюда вниз убрать в отдельный файл
     # reward = int(profile.values('cashback')[0]['cashback'])

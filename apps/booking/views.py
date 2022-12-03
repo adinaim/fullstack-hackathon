@@ -1,10 +1,11 @@
-from rest_framework.viewsets import ModelViewSet
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.viewsets import ModelViewSet, GenericViewSet
+from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.generics import ListAPIView
 from django_filters import rest_framework as rest_filter
 from rest_framework import filters
 from rest_framework.generics import CreateAPIView
 from rest_framework.generics import get_object_or_404
+from rest_framework import mixins
 
 from .models import TourPurchase
 from .serializers import (
@@ -14,7 +15,8 @@ from .serializers import (
 )
 
 
-class OrderViewSet(ModelViewSet):
+class OrderViewSet(mixins.CreateModelMixin,
+    GenericViewSet):
     # queryset =  
     serializer_class = TourPurchaseSerializer
     permission_classes = [IsAuthenticated]   
@@ -29,7 +31,8 @@ class OrderViewSet(ModelViewSet):
         return context
 
 
-class OrderHistoryView(ListAPIView):
+class OrderHistoryView(mixins.ListModelMixin,
+    GenericViewSet):
     serializer_class = PurchaseHistorySerializer
     permission_classes = [IsAuthenticated]
 
@@ -49,4 +52,11 @@ class OrderHistoryView(ListAPIView):
 #         author = get_object_or_404(TourPurchase, id=self.request.data.get('author_id'))
 #         return serializer.save(author=author)
 
+    # queryset = TourPurchase.objects.all()
+    # serializer_class = TourPurchaseSerializer
+
+    # def get_serializer_context(self):
+    #     context = super().get_serializer_context()
+    #     context['request'] = self.request
+    #     return context
     
