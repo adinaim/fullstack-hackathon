@@ -54,7 +54,8 @@ class Guide(models.Model):
         to=BusinessProfile,
         on_delete=models.CASCADE,
         verbose_name='Компания',
-        related_name='guides'
+        related_name='comp',
+        blank=True
     )
     first_name = models.CharField(max_length=150, verbose_name='Имя')
     last_name = models.CharField(max_length=150, verbose_name='Фамилия')

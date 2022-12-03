@@ -31,14 +31,16 @@ class OrderViewSet(mixins.CreateModelMixin,
         return context
 
 
-class OrderHistoryView(mixins.ListModelMixin,
-    GenericViewSet):
-    serializer_class = PurchaseHistorySerializer
-    permission_classes = [IsAuthenticated]
+# class OrderHistoryView(mixins.ListModelMixin,
+# GenericViewSet):
+#     # user = context['request'].user
+#     # queryset = TourPurchase.objects.filter(user=user)
+#     serializer_class = PurchaseHistorySerializer
+#     permission_classes = [IsAuthenticated]
 
-    def get_queryset(self):
-        user = self.request.user
-        return TourPurchase.objects.filter(user=user)
+#     def get_queryset(self):
+#         user = self.request.user
+#         return TourPurchase.objects.filter(user=user)
        
 
 # class PurchaseCreateView(CreateAPIView):
