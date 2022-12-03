@@ -32,13 +32,13 @@ User = get_user_model()
 
 class TourView(APIView):
     
-    request = Tour.objects.all()
+    # request = Tour.objects.all()
 
     permission_classes = [IsAuthenticated, IsOwner]#IsCompany]
 
 
     def post(self, request: Request): 
-        serializer = TourCreateSerializer(data=request.data)
+        serializer = TourCreateSerializer(context = {'request':request},data=request.data)
         if serializer.is_valid(raise_exception=True):
             # serializer.save(user=self.request.user)
             serializer.save()
@@ -46,6 +46,8 @@ class TourView(APIView):
                 'Тур успешно создан!',
                 status=status.HTTP_201_CREATED
             )
+
+    # def 
 
     
     # def get_serializer_context(self):

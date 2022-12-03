@@ -22,7 +22,9 @@ class Tour(models.Model):
     user = models.ForeignKey(
         to=User,
         on_delete=models.CASCADE,
-        # null=True
+        verbose_name='Юзер',
+        related_name='tours',
+        null=True # нужно убрать
     )
     company_name = models.ForeignKey(
         to=BusinessProfile,

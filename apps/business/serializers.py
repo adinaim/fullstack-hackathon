@@ -69,7 +69,7 @@ class BusinessProfileListSerializer(serializers.ModelSerializer):
 
 class GuideSerializer(serializers.ModelSerializer):
     user = serializers.ReadOnlyField(source='user.username')
-    company = serializers.ReadOnlyField(source='company_name.title')
+    company_name = serializers.ReadOnlyField(source='comp.slug')
 
     class Meta:
         model = Guide 
