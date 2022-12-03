@@ -75,19 +75,19 @@ class TourView(APIView):
 
 class TourRetrieveUpdateDeleteView(APIView):
 
-    def get_object(self, slug):
-        try:
-            return ConcreteTour.objects.get(slug=slug)
-        except ConcreteTour.DoesNotExist:
-            raise Http404
+    # def get_object(self, slug):
+    #     try:
+    #         return ConcreteTour.objects.get(slug=slug)
+    #     except ConcreteTour.DoesNotExist:
+    #         raise Http404
 
-    def get(self, request, slug):
-        try:
-            tour = Tour.objects.filter(slug=slug)
-            serializer = TourSerializer(tour, many=True).data
-            return Response(serializer)
-        except Tour.DoesNotExist:
-            raise Http404
+    # def get(self, request, slug):
+    #     try:
+    #         tour = Tour.objects.filter(slug=slug)
+    #         serializer = TourSerializer(tour, many=True).data
+    #         return Response(serializer)
+    #     except Tour.DoesNotExist:
+    #         raise Http404
 
     def put(self, request, slug):
         tour= self.get_object(slug)
@@ -151,6 +151,15 @@ class ConcreteTourDeleteUpdateView(APIView):
             serializer.save(user=self.request.user)
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+    def get(self, request, slug):
+        try:
+            tour = ConcreteTour.objects.filter(slug=slug)
+            serializer = ConcreteTourSerializer(tour, many=True).data
+            return Response(serializer)
+        except ConcreteTour.DoesNotExist:
+            raise Http404
 
 
 

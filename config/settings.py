@@ -62,6 +62,8 @@ INSTALLED_APPS = [
     'apps.booking',
 
     'apps.tour',
+
+    'apps.review',
 ]
 
 MIDDLEWARE = [

@@ -35,5 +35,5 @@ urlpatterns = [
 
    path('api/travel/', include('apps.tour.urls')),
 
-
+   path('api/', include('apps.review.urls')),
 ]
