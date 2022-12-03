@@ -1,12 +1,13 @@
 from email.policy import default
 from rest_framework import serializers
-
+from django.db.models import Avg
 from .models import (
     BusinessProfile,
     Guide,
     BusinessImage
 )
 from apps.account.utils import normalize_phone
+from apps.review.serializers import GuideRatingSerializer
 
 
 class BusinessProfileCreateSerializer(serializers.ModelSerializer):
@@ -69,7 +70,7 @@ class BusinessProfileListSerializer(serializers.ModelSerializer):
 
 class GuideSerializer(serializers.ModelSerializer):
     user = serializers.ReadOnlyField(source='user.username')
-    company_name = serializers.ReadOnlyField(source='comp.slug')
+    # company_name = serializers.ReadOnlyField(source='comp.slug')
 
     class Meta:
         model = Guide 
@@ -92,6 +93,17 @@ class GuideSerializer(serializers.ModelSerializer):
         attrs['user'] = user
         return attrs
 
+    # def to_representation(self, instance):
+    #     rep = super().to_representation(instance)
+    #     rating = instance.rating_guide.aggregate(Avg('rating'))['rating__avg']
+    #     if rating:
+    #         rep['rating'] = round(rating,1)
+    #     else:
+    #         rep['rating'] = 0.0
+
+    
+
+
 
 class GuideListSerializer(serializers.ModelSerializer):
     class Meta:
@@ -100,3 +112,11 @@ class GuideListSerializer(serializers.ModelSerializer):
 
         # return request.user.is_authenticated and request.user == obj.user
         # AttributeError: 'Guide' object has no attribute 'user'
+
+    # def to_representation(self, instance):
+    #     rep = super().to_representation(instance)
+    #     rating = instance.rating_guide.aggregate(Avg('rating'))['rating__avg']
+    #     if rating:
+    #         rep['rating'] = round(rating,1)
+    #     else:
+    #         rep['rating'] = 0.0

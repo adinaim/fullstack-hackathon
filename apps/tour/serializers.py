@@ -1,7 +1,7 @@
 from urllib import request
 from rest_framework import serializers
-
-
+from django.db.models import Avg
+from apps.review.serializers import CommentSerializer
 
 from .models import Tour, TourImage, ConcreteTour
 
@@ -56,9 +56,7 @@ class TourCreateSerializer(serializers.ModelSerializer):
         return attrs
         
         
-
-
-
+    
 
 
     
@@ -75,6 +73,9 @@ class TourSerializer(serializers.ModelSerializer):
     class Meta:
         model = Tour
         fields = '__all__'
+
+    
+
 
 
 class TourListSerializer(serializers.ModelSerializer):
@@ -93,12 +94,30 @@ class ConcreteTourCreateSerializer(serializers.ModelSerializer):
         tour = ConcreteTour.objects.create(**validated_data)
         return tour
 
+    
+
 
 class ConcreteTourSerializer(serializers.ModelSerializer):
-     class Meta:
+    class Meta:
         model = ConcreteTour
         fields = '__all__'
 
+    def to_representation(self, instance):
+        rep = super().to_representation(instance)
+        # rep['rating'] = RatingSerializer(
+        #     instance.rating_tour.all(),
+        #     many=True
+        # ).data
+        rating = instance.rating_tour.aggregate(Avg('rating'))['rating__avg']
+        rep['comments'] = CommentSerializer(
+            instance.comment_tour.all(),
+            many=True
+        ).data
+        if rating:
+            rep['rating'] = round(rating,1)
+        else:
+            rep['rating'] = 0.0
+        return rep
 
 class ConcreteTourListSerializer(serializers.ModelSerializer):
     class Meta:
