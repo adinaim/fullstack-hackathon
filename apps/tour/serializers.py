@@ -4,10 +4,13 @@ from django.db.models import Avg
 from apps.review.serializers import CommentSerializer
 
 from .models import Tour, TourImage, ConcreteTour
+from apps.business.models import BusinessProfile
 
+User = get_user_model()
 
 class TourCreateSerializer(serializers.ModelSerializer):
     user = serializers.ReadOnlyField(source='user.username')
+    company_name = serializers.ReadOnlyField(source='company_name.slug')
 
     class Meta:
         model = Tour
@@ -38,9 +41,22 @@ class TourCreateSerializer(serializers.ModelSerializer):
         #     tour.user = request.user
         # return tour
         user =  self.context['request'].user
+        user = User.objects.get(username=user)
+        # business = BusinessProfile.objects.filter(user=user)
+        company_name = user.profile
+        print(company_name.slug)
+        # print(bus)
+        # company_name = user.get('profile')
+        # print(User.profile.get('title'))
         TourImage.objects.bulk_create(images)
         tour.save()
         return tour
+
+# circuits = Circuits.objects.filter(site_data__id=1)
+# for cm in circuits:
+#     maintenances = cm.maintenance.all()
+#     for maintenance in maintenances:
+#          print(maintenance )
 
     # def create(self, validated_data):
     #     tour = Tour.objects.create(**validated_data)
@@ -54,9 +70,11 @@ class TourCreateSerializer(serializers.ModelSerializer):
         user = self.context['request'].user
         attrs['user'] = user
         return attrs
+
         
-        
-    
+
+
+
 
 
     
