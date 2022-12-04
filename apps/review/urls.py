@@ -6,6 +6,7 @@ from .views import (
     CommentView,
     RatingView,
     GuideRatingView,
+    LikeView,
 )
 
 
@@ -16,6 +17,7 @@ router.register('tour-favorite', FavoriteViewSet, 'tour-favorite')
 router.register('tour-comment', CommentView, 'comment')
 router.register('tour-rating', RatingView, 'tour-rating')
 router.register('guide-rating', GuideRatingView, 'guide-rating')
+router.register('tour-like', LikeView, 'tour-like')
 
 
 urlpatterns = [

@@ -6,6 +6,7 @@ from .models import (
     TourFavorite,
     TourRating,
     GuideRating,
+    TourLike,
 )
 
 
@@ -64,7 +65,7 @@ class FavoriteSerializer(serializers.ModelSerializer):
         favorite = TourFavorite.objects.filter(user=user, tour=tour).first()
         if not favorite:
             return super().create(validated_data)
-        raise serializers.ValidationError('This book has been added to favorites')
+        raise serializers.ValidationError('This tour has been added to favorites')
 
     def del_favorite(self, validated_data):
         user = self.context.get('request').user
@@ -98,3 +99,29 @@ class GuideRatingSerializer(serializers.ModelSerializer):
         instance.rating = validated_data.get('rating')
         instance.save()
         return super().update(instance, validated_data)
+
+
+class LikeSerializer(serializers.ModelSerializer):
+    user = serializers.ReadOnlyField(source='user.username')
+    
+
+    class Meta:
+        model = TourLike
+        fields = '__all__'
+
+    def create(self, validated_data):
+        user = self.context.get('request').user
+        tour = self.context.get('tour')
+        like = TourLike.objects.filter(user=user, tour=tour).first()
+        if like:
+            raise serializers.ValidationError('already liked')
+        return super().create(validated_data)
+
+    def unlike(self):
+        user = self.context.get('request').user
+        tour = self.context.get('tour')
+        like = TourLike.objects.filter(user=user, tour=tour).first()
+        if like:
+            like.delete()
+        else:
+            raise serializers.ValidationError('not liked yet')
