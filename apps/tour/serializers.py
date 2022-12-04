@@ -5,6 +5,8 @@ from apps.review.serializers import CommentSerializer
 
 from .models import Tour, TourImage, ConcreteTour
 from apps.business.models import BusinessProfile
+from django.contrib.auth import get_user_model
+
 
 User = get_user_model()
 
