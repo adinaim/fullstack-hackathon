@@ -164,19 +164,23 @@ CORS_ALLOWED_ORIGINS = [
     "http://127.0.0.1:8000",
     "http://localhost:3001",
     "http://localhost:3000",
-    "http://54.168.105.88/",
-    "http://54.168.105.88/:8000"
+    "http://44.206.228.104",
+    "http://44.206.228.104:8000",
+    'http://34.226.150.68:8000',
+    'http://34.226.150.68',
+    "http://54.168.105.88",
+    "http://54.168.105.88:8000"
 ]
 
-CORS_ALLOW_CREDENTIALS=True
+# CORS_ALLOW_CREDENTIALS=True
 
-CORS_ALLOW_HEADERS = default_headers + (
-    'Access-Control-Allow-Headers',
-    'Access-Control-Allow-Credentials',
-    'Access-Control-Allow-Origin',
-)
+# CORS_ALLOW_HEADERS = default_headers + (
+#     'Access-Control-Allow-Headers',
+#     'Access-Control-Allow-Credentials',
+#     'Access-Control-Allow-Origin',
+# )
 
-CORS_ORIGIN_ALLOW_ALL = True
+# CORS_ORIGIN_ALLOW_ALL = True
 
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
