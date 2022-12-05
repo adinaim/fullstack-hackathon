@@ -125,11 +125,16 @@ class ChangePasswordSerializer(serializers.Serializer):
         return old_password
 
     def validate(self, attrs: dict):
+        old_password = attrs.get('old_password')
         new_password = attrs.get('new_password')
         new_password_confirm = attrs.get('new_password_confirm')
         if new_password != new_password_confirm:
             raise serializers.ValidationError(
                 'Пароли не совпадают.'
+            )
+        if old_password == new_password:
+            raise serializers.ValidationError(
+                'Старый и новый пароль совпадают.Придумайте новый пароль!!!'
             )
         return attrs
 

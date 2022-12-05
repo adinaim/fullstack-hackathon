@@ -32,12 +32,6 @@ class Tour(models.Model):
         verbose_name='Компания',
         related_name='company'
     )
-    guide = models.ForeignKey(
-        to=Guide,
-        on_delete=models.CASCADE,
-        verbose_name='Гид',
-        related_name='tour_back'
-    )
     image = models.ImageField(upload_to='media/tour_image')
     place = models.CharField(max_length=100, verbose_name='Место')
     desc = models.CharField(max_length=150)
@@ -67,6 +61,12 @@ class ConcreteTour(models.Model):
         on_delete=models.CASCADE,
         verbose_name='Тур',
         related_name='concrete_tour'
+    )
+    guide = models.ForeignKey(
+        to=Guide,
+        on_delete=models.CASCADE,
+        verbose_name='Гид',
+        related_name='tour_back'
     )
     slug = models.SlugField(max_length=120, primary_key=True, blank=True)
     price_som = models.PositiveSmallIntegerField(verbose_name='Цена в национальной валюте')

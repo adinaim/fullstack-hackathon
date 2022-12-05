@@ -24,7 +24,7 @@ class CommentSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = TourComment
-        exclude = ['tour', 'id']
+        exclude = ['id']
         # fields = '__all__'
 
 
