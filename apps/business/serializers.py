@@ -10,6 +10,7 @@ from .models import (
 from django.contrib.auth import get_user_model
 from apps.account.utils import normalize_phone
 from apps.bio.models import UserProfile 
+from apps.review.serializers import GuideRatingSerializer, RatingSerializer
 
 User = get_user_model()
 
@@ -100,13 +101,17 @@ class GuideSerializer(serializers.ModelSerializer):
         attrs['company_name'] = user.profile
         return attrs
 
-    # def to_representation(self, instance):
-    #     rep = super().to_representation(instance)
-    #     rating = instance.rating_guide.aggregate(Avg('rating'))['rating__avg']
-    #     if rating:
-    #         rep['rating'] = round(rating,1)
-    #     else:
-    #         rep['rating'] = 0.0
+    def to_representation(self, instance):
+        rep = super().to_representation(instance)
+        # rating = instance.rating_guide.aggregate(Avg('rating'))['rating__avg']
+        # if rating:
+        #     rep['rating'] = round(rating,1)
+        # else:
+        #     rep['rating'] = 0.0
+        rep['rating'] = RatingSerializer(
+            instance=instance.rating_guide.all(),
+            many=True
+        )
 
 
 class GuideListSerializer(serializers.ModelSerializer):
