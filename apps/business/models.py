@@ -60,7 +60,7 @@ class Guide(models.Model):
     )
     first_name = models.CharField(max_length=150, verbose_name='Имя')
     last_name = models.CharField(max_length=150, verbose_name='Фамилия')
-    image = models.ImageField()
+    image = models.ImageField(upload_to='guides_images')
     age = models.PositiveSmallIntegerField()
     slug = models.SlugField(max_length=200, primary_key=True, blank=True)
 

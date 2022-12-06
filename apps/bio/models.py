@@ -11,7 +11,8 @@ class UserProfile(models.Model):
         to=User,
         on_delete=models.CASCADE,
         related_name='user_profile',
-        primary_key=True
+        primary_key=True,
+        unique=True
     )
     first_name = models.CharField(max_length=150, verbose_name='Имя')
     last_name = models.CharField(max_length=150, verbose_name='Фамилия')

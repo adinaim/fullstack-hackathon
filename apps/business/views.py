@@ -92,6 +92,13 @@ class BusinessView(APIView):
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+    # def check_profile(self, request):
+    #     serializer = BusinessProfileSerializer(
+    #             data=request.data, 
+    #             context={
+    #                 'request':request,
+    #             })
+
 
 class BusinessRetrieveView(APIView):
     def get(self, request, slug):

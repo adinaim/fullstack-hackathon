@@ -1,7 +1,7 @@
 from urllib import request
 from rest_framework import serializers
 from django.db.models import Avg
-from apps.review.serializers import CommentSerializer
+from apps.review.serializers import CommentSerializer, LikeSerializer
 from django.contrib.auth import get_user_model
 
 from .models import Tour, TourImage, ConcreteTour
@@ -13,7 +13,7 @@ User = get_user_model()
 
 class TourCreateSerializer(serializers.ModelSerializer):
     user = serializers.ReadOnlyField(source='user.username')
-    company_name = serializers.ReadOnlyField(source='company_name.slug')
+    company_name = serializers.ReadOnlyField()
 
     class Meta:
         model = Tour
@@ -24,11 +24,8 @@ class TourCreateSerializer(serializers.ModelSerializer):
         child=serializers.ImageField(),
         write_only=True,
     )
-
-    # def validate(self, attrs):
-    #     user = request.data.get('user')
-    #     attrs['user'] = user
-    #     return attrs
+    # tour = Tour.objects.first()
+    # print(tour.company_name)
 
     def create(self, validated_data):
         avatar_carousel = validated_data.pop('tour_image_carousel')
@@ -36,24 +33,31 @@ class TourCreateSerializer(serializers.ModelSerializer):
         images = []
         for image in avatar_carousel:
             images.append(TourImage(tour=tour, image=image))
-        # tour = Tour.objects.create(**validated_data)
-        # tour.user = None
-        # user = request.data.user
-        # request = self.context.get("request")
-        # if request and hasattr(request, "user"):
-        #     tour.user = request.user
-        # return tour
-        user =  self.context['request'].user
-        user = User.objects.get(username=user)
-        # business = BusinessProfile.objects.filter(user=user)
-        company_name = user.profile
-        print(company_name.slug)
-        # print(bus)
-        # company_name = user.get('profile')
-        # print(User.profile.get('title'))
         TourImage.objects.bulk_create(images)
         tour.save()
-        return tour
+        user = self.context['request'].user
+        # attrs['user'] = user
+        print(user)
+        print(type(user))
+        print(user.profile)
+        print(type(user.profile))
+        # print(attrs['user'])
+        validated_data['company_name'] = user.profile.title
+        # print(tour.company_name)
+        return tour#, company_name
+
+    def validate(self, attrs):
+        user = self.context['request'].user
+        attrs['user'] = user
+        # print(attrs['user'])
+        # company_name = user.profile
+        attrs['company_name'] = user.profile
+        company_name = user.profile.title
+        # print('attrs', attrs['company_name'])
+        # print('attrs', type(attrs['company_name']))
+        # print(attrs)
+        return attrs
+
 
 # circuits = Circuits.objects.filter(site_data__id=1)
 # for cm in circuits:
@@ -134,6 +138,8 @@ class ConcreteTourSerializer(serializers.ModelSerializer):
             instance.comment_tour.all(),
             many=True
         ).data
+        rep['likes'] = instance.like_tour.all().count()
+        rep['liked_by'] = LikeSerializer(instance.like_tour.all().only('user'), many=True).data
         if rating:
             rep['rating'] = round(rating,1)
         else:

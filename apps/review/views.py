@@ -23,6 +23,7 @@ from .serializers import (
     CommentSerializer,
     FavoriteSerializer,
     GuideRatingSerializer,
+    LikeSerializer,
 )
 from .models import (
     TourComment, 
@@ -48,7 +49,7 @@ class FavoriteViewSet(mixins.CreateModelMixin,
             self.permission_classes = [IsOwner]
         return super().get_permissions()
 
-    @action(detail=True, methods=['POST'])
+    # @action(detail=True, methods=['POST'])
     def favorite(self, request, pk=None):
         tour = self.get_object().get('slug')
         serializer = FavoriteSerializer(
@@ -109,3 +110,38 @@ class GuideRatingView(mixins.CreateModelMixin,
         context = super().get_serializer_context()
         context['request'] = self.request
         return context
+
+
+class LikeView(mixins.CreateModelMixin,
+    mixins.DestroyModelMixin,
+    mixins.ListModelMixin,
+    GenericViewSet):
+    serializer_class = FavoriteSerializer
+    queryset = TourFavorite.objects.all()
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
+
+    def get_permissions(self):
+        if self.action == 'like' and self.request.method == 'POST':
+            self.permission_classes = [IsAuthenticated]
+        if self.action == 'like' and self.request.method =='DELETE':
+            self.permission_classes = [IsOwner]
+        return super().get_permissions()
+
+    # @action(detail=True, methods=['POST'])#, 'DELETE'])
+    def like(self, request, pk=None):
+        post = self.get_object()
+        serializer = LikeSerializer(
+            data=request.data, 
+            context={
+                'request':request,
+                'post':post
+            })
+        if serializer.is_valid(raise_exception=True):
+            if request.method == 'POST':
+                serializer.save(user=request.user)
+                return Response('liked!')
+            if request.method == 'DELETE':
+                serializer.unlike()
+                return Response('unliked!')

@@ -1,32 +1,42 @@
 from apps.bio.models import UserProfile
-from .models import TourPurchase
 
+from .models import TourPurchase
+from .tasks import send_details
 
 def cashback(context, order, total_sum):
     user = context['request'].user
+
     profile = UserProfile.objects.filter(user=user)
 
-    print('profile', str(profile))
-    reward = int(profile.values('cashback')[0]['cashback'])
-    print('reward', reward)
-    order.total_sum = total_sum - total_sum*reward/100
+    if profile:
+        reward = int(profile.values('cashback')[0]['cashback'])
+        order.total_sum = total_sum - total_sum*reward/100
 
-    collected_sum = int(profile.values('collected_sum')[0]['collected_sum'])
-    collected_sum += order.total_sum
+        collected_sum = int(profile.values('collected_sum')[0]['collected_sum'])
+        collected_sum += order.total_sum
 
-    profile.update(
-        collected_sum=collected_sum)
+        profile.update(
+            collected_sum=collected_sum)
 
-    check_cashback = int(profile.values('collected_sum')[0]['collected_sum']) 
-    if check_cashback >= 10000:
-        profile.update(
-            cashback=5)
-    if check_cashback >= 20000:
-        profile.update(
-            cashback=7)
-    if check_cashback >= 30000:
-        profile.update(
-            cashback=10)
+        check_cashback = int(profile.values('collected_sum')[0]['collected_sum']) 
+        if check_cashback >= 20000:
+            profile.update(
+                cashback=5)
+        if check_cashback >= 50000:
+            profile.update(
+                cashback=7)
+        if check_cashback >= 100000:
+            profile.update(
+                cashback=10)
+
+        order.save()
+        email = user.email
+        code = order.code
+        send_details(email, code)
+
+    
+    if not profile:
+        return 'Чтобы получить скидку, заполните свой профиль.'
 
 
 # чтоб отнималось количество занятых мест

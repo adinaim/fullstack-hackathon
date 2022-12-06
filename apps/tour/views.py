@@ -38,7 +38,7 @@ class TourView(APIView):
 
 
     def post(self, request: Request): 
-        serializer = TourCreateSerializer(context = {'request':request},data=request.data)
+        serializer = TourCreateSerializer(context = {'request':request}, data=request.data)
         if serializer.is_valid(raise_exception=True):
             # serializer.save(user=self.request.user)
             serializer.save()

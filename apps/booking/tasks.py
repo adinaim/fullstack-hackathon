@@ -3,28 +3,17 @@ from django.conf import settings
 from django.core.mail import send_mail
 from django.template.loader import render_to_string
 
-
 # @app.task
-def send_activation_sms(phone, activation_code):
-    from twilio.rest import Client
-    client = Client(settings.TWILIO_SID, settings.TWILIO_AUTH_TOKEN)
-    message = client.messages.create(
-        body=f'Это ваш активационный код: {activation_code}',
-        from_=settings.TWILIO_NUMBER,
-        to=phone
-    )
-    print(message.sid)
-
-
-# @app.task
-def send_activation_code(email, activation_code):
-    activation_link = f'http://localhost:8000/api/account/activate/{activation_code}/'
+def send_details(email, code):
     html_message = render_to_string(
-        'account/code_mail.html',
-        {'activation_link': activation_link}
+        'booking/confirmation_mail.html',
+        {'confirmation_code': code},
+        {},
+        {},
+        {},
         )
     send_mail(
-        'Активируйте ваш аккаунт!',
+        'Детали вашего тура',
         '',
         settings.EMAIL_HOST_USER,
         [email],
