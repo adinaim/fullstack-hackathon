@@ -7,9 +7,11 @@ from .models import (
     Guide,
     BusinessImage
 )
+from django.contrib.auth import get_user_model
 from apps.account.utils import normalize_phone
 from apps.bio.models import UserProfile 
 
+User = get_user_model()
 
 class BusinessProfileCreateSerializer(serializers.ModelSerializer):
     user = serializers.ReadOnlyField(
@@ -82,27 +84,22 @@ class BusinessProfileListSerializer(serializers.ModelSerializer):
 
 class GuideSerializer(serializers.ModelSerializer):
     user = serializers.ReadOnlyField(source='user.username')
-    # company_name = serializers.ReadOnlyField(source='comp.slug')
+    company_name = serializers.ReadOnlyField(source='company_name.title')
 
     class Meta:
         model = Guide 
         fields = '__all__'
 
-    # company_name = serializers.ReadOnlyField(source='company_name.pk')
-    # company_name = serializers.ReadOnlyField(
-    #     source='company_name.slug'
-    # )
-
-    # first_name = serializers.CharField(max_length=100)
-    # last_name = serializers.CharField(max_length=100)
-
     def create(self, validated_data):
+        user = self.context['request'].user
         guide = Guide.objects.create(**validated_data)
+        print('type', type(user.profile))
         return guide
 
     def validate(self, attrs):
         user = self.context['request'].user
         attrs['user'] = user
+        attrs['company_name'] = user.profile
         return attrs
 
     # def to_representation(self, instance):
@@ -112,9 +109,6 @@ class GuideSerializer(serializers.ModelSerializer):
     #         rep['rating'] = round(rating,1)
     #     else:
     #         rep['rating'] = 0.0
-
-    
-
 
 
 class GuideListSerializer(serializers.ModelSerializer):

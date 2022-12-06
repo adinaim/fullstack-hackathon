@@ -5,8 +5,9 @@ from .models import (
     TourItems
 )
 from apps.bio.models import UserProfile
+
 from .utils import cashback
-# from .tasks import send_detail_info
+from apps.tour.models import ConcreteTour
 
 class TourItemsSerializer(serializers.ModelSerializer):
     class Meta:
@@ -29,22 +30,31 @@ class TourPurchaseSerializer(serializers.ModelSerializer):
         total_sum = 0
         orders_items = []
         for item in items:
-            orders_items.append(TourItems(
+            tickets = (TourItems(
                 order=order,
                 tour=item['tour'],
                 people_num=item['people_num']
             ))
-            total_sum += item['tour'].price_som * item['people_num']
+            orders_items.append(tickets)
 
-        TourItems.objects.bulk_create(orders_items, *args, **kwargs)
-        order.total_sum = total_sum
+            if item['tour'].people_count >= item['people_num']:
+                item['tour'].people_count -= item['people_num']
 
-        if self.context['request'].user.is_authenticated:
-            cashback(self.context, order, total_sum)
+                total_sum += item['tour'].price_som * item['people_num']
+                TourItems.objects.bulk_create(orders_items, *args, **kwargs)
+                order.total_sum = total_sum
 
-        order.save()
-        # send_detail_info()
-        return order
+                order.create_code()
+
+                if self.context['request'].user.is_authenticated:
+                    cashback(self.context, order, total_sum)
+
+                item['tour'].save()
+                order.save()
+                
+                return order
+            else:
+                raise serializers.ValidationError('Недостаточно свободных мест.')
 
 
 class PurchaseHistorySerializer(serializers.ModelSerializer):
