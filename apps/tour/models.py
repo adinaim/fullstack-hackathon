@@ -66,7 +66,7 @@ class ConcreteTour(models.Model):
         to=Guide,
         on_delete=models.CASCADE,
         verbose_name='Гид',
-        related_name='tour_back'
+        related_name='tour'
     )
     slug = models.SlugField(max_length=120, primary_key=True, blank=True)
     price_som = models.PositiveSmallIntegerField(verbose_name='Цена в национальной валюте')

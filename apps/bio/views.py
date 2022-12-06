@@ -21,6 +21,13 @@ class ProfileViewSet(ModelViewSet):
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
 
+    def check_businessprofile(self, request):
+        serializer = UserProfileCreateSerializer(
+                data=request.data, 
+                context={
+                    'request':request,
+                })
+
     def get_serializer_class(self):
         if self.action == 'list':
             return UserProfileListSerializer
