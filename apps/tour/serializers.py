@@ -13,7 +13,7 @@ User = get_user_model()
 
 class TourCreateSerializer(serializers.ModelSerializer):
     user = serializers.ReadOnlyField(source='user.username')
-    company_name = serializers.ReadOnlyField()
+    # company_name = serializers.ReadOnlyField(source='company_name.title')
 
     class Meta:
         model = Tour
@@ -35,28 +35,36 @@ class TourCreateSerializer(serializers.ModelSerializer):
             images.append(TourImage(tour=tour, image=image))
         TourImage.objects.bulk_create(images)
         tour.save()
+
         user = self.context['request'].user
         # attrs['user'] = user
-        print(user)
-        print(type(user))
-        print(user.profile)
-        print(type(user.profile))
+        # print(user)
+        # print(type(user))
+
+        # print(user.profile)
+        # company_name = user.profile.title
+
+        # print(type(user.profile))
         # print(attrs['user'])
-        validated_data['company_name'] = user.profile.title
+        # validated_data['company_name'] = user.profile
+        # company_name = user.profile
+        # print('val', validated_data['company_name'])
         # print(tour.company_name)
+
         return tour#, company_name
 
-    def validate(self, attrs):
+    def validate(self, attrs):#, validated_data):
         user = self.context['request'].user
         attrs['user'] = user
         # print(attrs['user'])
         # company_name = user.profile
-        attrs['company_name'] = user.profile
-        company_name = user.profile.title
+        # validated_data['company_name'] = user.profile
+        # company_name = user.profile.title
+        # attrs['company_name'] = company_name
         # print('attrs', attrs['company_name'])
         # print('attrs', type(attrs['company_name']))
         # print(attrs)
-        return attrs
+        return attrs#, validated_data
 
 
 # circuits = Circuits.objects.filter(site_data__id=1)

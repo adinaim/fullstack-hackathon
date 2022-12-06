@@ -3,35 +3,54 @@ from apps.bio.models import UserProfile
 from .models import TourPurchase
 from .tasks import send_details
 
-def cashback(context, order, total_sum):
+def cashback(context, order, total_sum, company):
     user = context['request'].user
 
     profile = UserProfile.objects.filter(user=user)
 
     if profile:
-        reward = int(profile.values('cashback')[0]['cashback'])
+        cashback = profile.values('cashback')[0]['cashback']
+
+        for i in cashback:
+            if company in i.keys():
+                reward = int(cashback[company][cashback])
+            else:
+                cashback.append({company: {cashback: 0, collected_sum: 0}})
+                reward = 0
+
         order.total_sum = total_sum - total_sum*reward/100
 
-        collected_sum = int(profile.values('collected_sum')[0]['collected_sum'])
+        collected_sum = int(cashback[company][collected_sum])
         collected_sum += order.total_sum
 
-        profile.update(
-            collected_sum=collected_sum)
+        profile.update(   # .setdefault(company, {cashback: 0, collected_sum: 0})
+            cashback)
 
-        check_cashback = int(profile.values('collected_sum')[0]['collected_sum']) 
+        check_cashback = int(cashback[company][cashback]) 
+        if check_cashback >= 10000:
+            profile.update(
+                cashback)  # .setdefault(
+                    # company, {cashback: 3, collected_sum: 0}
+                    # )
         if check_cashback >= 20000:
             profile.update(
-                cashback=5)
+                cashback)
         if check_cashback >= 50000:
             profile.update(
-                cashback=7)
+                cashback)
         if check_cashback >= 100000:
             profile.update(
-                cashback=10)
+                cashback)
+
+        # title = tours.tour.title # tour
+        # date = tours.date # tour
+        # guide = tours.guide # tour
+        # people_num = people # order
 
         order.save()
         email = user.email
         code = order.code
+        print(code)
         send_details(email, code)
 
     
