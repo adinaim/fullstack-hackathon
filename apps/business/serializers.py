@@ -101,17 +101,17 @@ class GuideSerializer(serializers.ModelSerializer):
         attrs['company_name'] = user.profile
         return attrs
 
-    def to_representation(self, instance):
-        rep = super().to_representation(instance)
-        # rating = instance.rating_guide.aggregate(Avg('rating'))['rating__avg']
-        # if rating:
-        #     rep['rating'] = round(rating,1)
-        # else:
-        #     rep['rating'] = 0.0
-        rep['rating'] = RatingSerializer(
-            instance=instance.rating_guide.all(),
-            many=True
-        )
+    # def to_representation(self, instance):
+    #     rep = super().to_representation(instance)
+    #     # rating = instance.rating.aggregate(Avg('rating'))['rating__avg']
+    #     # if rating:
+    #     #     rep['rating'] = round(rating,1)
+    #     # else:
+    #     #     rep['rating'] = 0.0
+    #     rep['rating'] = RatingSerializer(
+    #         instance=instance.rating.all(),
+    #         many=True
+    #     ).data
 
 
 class GuideListSerializer(serializers.ModelSerializer):
