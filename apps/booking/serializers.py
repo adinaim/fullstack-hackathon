@@ -44,14 +44,15 @@ class TourPurchaseSerializer(serializers.ModelSerializer):
                 TourItems.objects.bulk_create(orders_items, *args, **kwargs)
                 order.total_sum = total_sum
 
+                # people = item['people_num']
+                # tours = item['tour']
                 order.create_code()
-
                 if self.context['request'].user.is_authenticated:
-                    cashback(self.context, order, total_sum)
+                    cashback(self.context, order, total_sum, item['tour'].tour.company_name)
 
                 item['tour'].save()
                 order.save()
-                
+
                 return order
             else:
                 raise serializers.ValidationError('Недостаточно свободных мест.')

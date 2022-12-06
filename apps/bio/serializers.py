@@ -40,6 +40,11 @@ class UserProfileCreateSerializer(serializers.Serializer):
                 raise serializers.ValidationError('У вас уже существует бизнес профиль!')
         return attrs
 
+    def validate(self, attrs):
+        user = self.context['request'].user
+        attrs['user'] = user
+        return attrs
+
 
 
 class UserProfileListSerializer(serializers.ModelSerializer):

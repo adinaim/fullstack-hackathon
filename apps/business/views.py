@@ -9,6 +9,9 @@ from rest_framework.permissions import (
     IsAdminUser,
 )
 from django.http import Http404
+from django.utils.decorators import method_decorator 
+from django.views.decorators.cache import cache_page
+from django.views.decorators.vary import vary_on_cookie
 
 from .permissions import IsOwner
 from .models import BusinessProfile, Guide
@@ -60,6 +63,8 @@ from .serializers import (
 
 
 class BusinessView(APIView):
+    search_fields = ['title']
+    filterset_fields = []
 
     def get(self, request: Request):
         bus = BusinessProfile.objects.all()
@@ -104,7 +109,8 @@ class BusinessView(APIView):
 
 
 class BusinessRetrieveView(APIView):
-    permission_classes = [AllowAny]
+    @method_decorator(cache_page(60*5))
+    @method_decorator(vary_on_cookie)
     def get(self, request, slug):
         try:
             bus = BusinessProfile.objects.filter(slug=slug)

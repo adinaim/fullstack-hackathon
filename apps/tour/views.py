@@ -11,6 +11,9 @@ from rest_framework.permissions import (
 )
 from rest_framework import status
 from slugify import slugify
+from django.utils.decorators import method_decorator 
+from django.views.decorators.cache import cache_page
+from django.views.decorators.vary import vary_on_cookie
 
 from django.contrib.auth import get_user_model
 
@@ -35,7 +38,8 @@ class TourView(APIView):
     # request = Tour.objects.all()
 
     permission_classes = [IsAuthenticated, IsOwner]#IsCompany]
-
+    search_fields = ['title', 'place']
+    filterset_fields = ['level', 'place', 'company_name', 'company_name__rating_tour']
 
     def post(self, request: Request): 
         serializer = TourCreateSerializer(context = {'request':request}, data=request.data)
@@ -162,7 +166,8 @@ class ConcreteTourDeleteUpdateView(APIView):
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-
+    @method_decorator(cache_page(60*5))
+    @method_decorator(vary_on_cookie)
     def get(self, request, slug):
         try:
             tour = ConcreteTour.objects.filter(slug=slug)

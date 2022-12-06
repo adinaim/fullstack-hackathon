@@ -18,7 +18,7 @@ def send_activation_sms(phone, activation_code):
 
 # @app.task
 def send_activation_code(email, activation_code):
-    activation_link = f'http://localhost:8000/api/account/activate/{activation_code}/'
+    activation_link = f'http://35.78.172.218/api/account/activate/{activation_code}/'
     html_message = render_to_string(
         'account/code_mail.html',
         {'activation_link': activation_link}

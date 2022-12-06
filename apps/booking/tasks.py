@@ -7,11 +7,9 @@ from django.template.loader import render_to_string
 def send_details(email, code):
     html_message = render_to_string(
         'booking/confirmation_mail.html',
-        {'confirmation_code': code},
-        {},
-        {},
-        {},
+        {'confirmation_code': code}
         )
+        
     send_mail(
         'Детали вашего тура',
         '',
