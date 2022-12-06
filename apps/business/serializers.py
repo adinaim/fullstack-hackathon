@@ -1,4 +1,5 @@
 from email.policy import default
+from urllib import request
 from rest_framework import serializers
 from django.db.models import Avg
 from .models import (
@@ -8,7 +9,7 @@ from .models import (
 )
 from django.contrib.auth import get_user_model
 from apps.account.utils import normalize_phone
-from apps.review.serializers import GuideRatingSerializer
+from apps.bio.models import UserProfile 
 
 User = get_user_model()
 
@@ -37,6 +38,17 @@ class BusinessProfileCreateSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         profile = BusinessProfile.objects.create(**validated_data)
         return profile
+
+    # def validate(self, attrs):
+    #     user = self.context.get('request').user
+    #     print(request)
+    #     print(self.context)
+
+    #     profile = UserProfile.objects.filter(user=user).first()
+    #     if profile:
+    #         raise serializers.ValidationError('У вас уже существует профиль!')
+    #     return attrs
+
       
 
 class BusinessImageSerializer(serializers.ModelSerializer):

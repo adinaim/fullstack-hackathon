@@ -1,7 +1,7 @@
 from urllib import request
 from rest_framework import serializers
 from django.db.models import Avg
-from apps.review.serializers import CommentSerializer
+from apps.review.serializers import CommentSerializer, LikeSerializer
 from django.contrib.auth import get_user_model
 
 from .models import Tour, TourImage, ConcreteTour
@@ -138,6 +138,8 @@ class ConcreteTourSerializer(serializers.ModelSerializer):
             instance.comment_tour.all(),
             many=True
         ).data
+        rep['likes'] = instance.like_tour.all().count()
+        rep['liked_by'] = LikeSerializer(instance.like_tour.all().only('user'), many=True).data
         if rating:
             rep['rating'] = round(rating,1)
         else:

@@ -68,3 +68,18 @@ class TourFavorite(models.Model):
         on_delete=models.CASCADE,
         related_name='favorite_tour'
     )
+
+
+class TourLike(models.Model):
+    user = models.ForeignKey(
+        to=User,
+        on_delete=models.CASCADE,
+    )
+    tour = models.ForeignKey(
+        to=ConcreteTour,
+        on_delete=models.CASCADE,
+        related_name='like_tour'
+    )
+
+    def __str__(self) -> str:
+        return f'liked by {self.user.username}'
