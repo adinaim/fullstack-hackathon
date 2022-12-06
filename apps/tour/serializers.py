@@ -13,7 +13,7 @@ User = get_user_model()
 
 class TourCreateSerializer(serializers.ModelSerializer):
     user = serializers.ReadOnlyField(source='user.username')
-    company_name = serializers.ReadOnlyField()
+    # company_name = serializers.ReadOnlyField()
 
     class Meta:
         model = Tour
@@ -100,7 +100,12 @@ class TourSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
     
-
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        representation['carousel'] = TourImageSerializer(
+            instance.tour_images.all(), many=True
+        ).data
+        return representation
 
 
 class TourListSerializer(serializers.ModelSerializer):
@@ -152,3 +157,7 @@ class ConcreteTourListSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
     
+class TourImageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = TourImage
+        fields = 'image',

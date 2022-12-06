@@ -82,15 +82,18 @@ class BusinessView(APIView):
         except BusinessProfile.DoesNotExist:
             raise Http404
 
-    def put(self, request, slug):   # требует передавать поля
-        # user = request.data.get('user')
-        # bus = BusinessProfile.objects.get(slug=slug)
-        bus = self.get_object(slug)
-        serializer = BusinessProfileSerializer(instance=bus, data=request.data, partial=True)
-        if serializer.is_valid():
-            serializer.save(user=self.request.user)
-            return Response(serializer.data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+    '''не работает PUT'''
+    # def put(self, request, slug):   # требует передавать поля
+    #     # user = request.data.get('user')
+    #     # bus = BusinessProfile.objects.get(slug=slug)
+    #     bus = self.get_object(slug)
+    #     serializer = BusinessProfileSerializer(instance=bus, data=request.data, partial=True)
+    #     if serializer.is_valid():
+    #         serializer.save(user=self.request.user)
+    #         return Response(serializer.data)
+    #     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     # def check_profile(self, request):
     #     serializer = BusinessProfileSerializer(
@@ -101,6 +104,7 @@ class BusinessView(APIView):
 
 
 class BusinessRetrieveView(APIView):
+    permission_classes = [AllowAny]
     def get(self, request, slug):
         try:
             bus = BusinessProfile.objects.filter(slug=slug)
@@ -137,6 +141,7 @@ class BusinessRetrieveView(APIView):
 
 
 class BusinessDeleteView(APIView):
+    permission_classes = [IsOwner]
     def delete(self, request: Request, slug):
         # user = request.data.get('user')
         profile = BusinessProfile.objects.get(slug=slug).delete()

@@ -74,43 +74,51 @@ class TourView(APIView):
 
 
 class TourRetrieveUpdateDeleteView(APIView):
+    permission_classes = [IsOwner]
 
-    # def get_object(self, slug):
-    #     try:
-    #         return ConcreteTour.objects.get(slug=slug)
-    #     except ConcreteTour.DoesNotExist:
-    #         raise Http404
+    def get_object(self, slug):
+        try:
+            return ConcreteTour.objects.get(slug=slug)
+        except ConcreteTour.DoesNotExist:
+            raise Http404
 
-    # def get(self, request, slug):
-    #     try:
-    #         tour = Tour.objects.filter(slug=slug)
-    #         serializer = TourSerializer(tour, many=True).data
-    #         return Response(serializer)
-    #     except Tour.DoesNotExist:
-    #         raise Http404
+    def get(self, request, slug):
+        try:
+            tour = Tour.objects.filter(slug=slug)
+            serializer = TourSerializer(tour, many=True).data
+            return Response(serializer)
+        except Tour.DoesNotExist:
+            raise Http404
 
     def put(self, request, slug):
         tour= self.get_object(slug)
         serializer = TourSerializer(tour, data=request.data)
         if serializer.is_valid():
-            # t = Tour.objects.filter(slug=slug).first()
-            # t.slug = slugify(tour.title)
-            # t.save()
             serializer.save(user=self.request.user)
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
+    # def delete(self, request: Request, slug):
+    #     tour = request.tour.slug
+    #     Tour.objects.get(tour=tour).delete()
+    #     return Response(
+    #         'Тур удален!',
+    #         status=status.HTTP_204_NO_CONTENT
+    #     )
+
     def delete(self, request: Request, slug):
-        tour = request.tour.slug
-        Tour.objects.get(tour=tour).delete()
+        # user = request.data.get('user')
+        tour = Tour.objects.get(slug=slug).delete()
         return Response(
-            'Тур удален!',
+            'Ваш бизнес профиль удален.',
             status=status.HTTP_204_NO_CONTENT
         )
 
 
 
 class ConcreteTourView(APIView):
+    permission_classes = [IsOwner]
+
     def post(self, request: Request): 
         serializer = ConcreteTourCreateSerializer(data=request.data)
         if serializer.is_valid(raise_exception=True):
@@ -130,6 +138,8 @@ class ConcreteTourView(APIView):
 
 
 class ConcreteTourDeleteUpdateView(APIView):
+    permission_classes = [IsOwner]
+
     def delete(self, request: Request):
         tour = request.tour.title
         ConcreteTour.objects.get(tour=tour).delete()
