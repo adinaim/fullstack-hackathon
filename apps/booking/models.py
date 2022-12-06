@@ -1,11 +1,14 @@
 from django.db import models
 from django.contrib.auth import get_user_model
+from django.utils.crypto import get_random_string
 
 from apps.tour.models import ConcreteTour
 
 User = get_user_model()
 
 class TourPurchase(models.Model):
+    RANDOM_STRING_CHARS = "1234567890"
+
     STATUS_CHOICES = (
         ('pending', 'Ожидается'),
         ('finished', 'Пройден')
@@ -26,6 +29,7 @@ class TourPurchase(models.Model):
     status = models.CharField(max_length=9, choices=STATUS_CHOICES, default='pending')
     # address = models.CharField(max_length=200)
     created_at = models.DateTimeField(auto_now_add=True)
+    code = models.CharField(max_length=6, blank=True)
 
     def __str__(self):
         return f'Заказ № {self.order_id}'
@@ -35,6 +39,13 @@ class TourPurchase(models.Model):
         if not self.order_id:
             self.order_id = str(self.user.username) + '-' + (str(self.created_at))[9:16].replace(':', '-').replace(' ', '-')
         return self.order_id
+
+    def create_code(self):
+        code = get_random_string(length=6, allowed_chars=self.RANDOM_STRING_CHARS)
+        if TourPurchase.objects.filter(code=code).exists():
+            self.create_code()
+        self.code = code
+        self.save()
 
     class Meta:
         verbose_name = 'Покупка тура'
