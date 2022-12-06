@@ -67,7 +67,7 @@ class BusinessProfileSerializer(serializers.ModelSerializer):
     def to_representation(self, instance):          # не показывает
         rep =  super().to_representation(instance)
         rep['guides'] = GuideListSerializer(
-            instance.guides.all(), many=True
+            instance.comp.all(), many=True
         ).data
         return rep
         # rep['tour'] = TourListSerializer(
@@ -91,9 +91,7 @@ class GuideSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
     def create(self, validated_data):
-        user = self.context['request'].user
         guide = Guide.objects.create(**validated_data)
-        print('type', type(user.profile))
         return guide
 
     def validate(self, attrs):

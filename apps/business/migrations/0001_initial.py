@@ -37,7 +37,9 @@ class Migration(migrations.Migration):
             fields=[
                 ('first_name', models.CharField(max_length=150, verbose_name='Имя')),
                 ('last_name', models.CharField(max_length=150, verbose_name='Фамилия')),
+
                 ('image', models.ImageField(upload_to='guides_images')),
+
                 ('age', models.PositiveSmallIntegerField()),
                 ('slug', models.SlugField(blank=True, max_length=200, primary_key=True, serialize=False)),
                 ('company_name', models.ForeignKey(blank=True, on_delete=django.db.models.deletion.CASCADE, related_name='comp', to='business.businessprofile', verbose_name='Компания')),
