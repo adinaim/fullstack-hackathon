@@ -31,3 +31,7 @@ def send_activation_code(email, activation_code):
         html_message=html_message,
         fail_silently=False   
     )
+
+
+def check_activation():
+    ...
