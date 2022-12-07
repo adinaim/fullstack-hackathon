@@ -114,7 +114,7 @@ class BusinessRetrieveView(APIView):
     def get(self, request, slug):
         try:
             bus = BusinessProfile.objects.filter(slug=slug)
-            serializer = BusinessProfileSerializer(bus, many=True).data
+            serializer = BusinessProfileSerializer(bus, many=True).data   # many=True убрать
             return Response(serializer)
         except BusinessProfile.DoesNotExist:
             raise Http404
