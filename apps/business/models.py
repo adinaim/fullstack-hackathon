@@ -14,7 +14,7 @@ class BusinessProfile(models.Model):
         unique=True
     )
     title = models.CharField(max_length=100, verbose_name='Название компании', unique=True)
-    image = models.ImageField(upload_to='media/business_profile_images')
+    image = models.ImageField(upload_to='business_images')
     desc = models.CharField(max_length=200, verbose_name='О компании')
     phone = models.CharField(max_length=13, verbose_name='Номер телефона')
     email = models.EmailField(max_length=150, verbose_name='Электронная почта', blank=True)
@@ -35,7 +35,7 @@ class BusinessProfile(models.Model):
 
 
 class BusinessImage(models.Model):
-    image = models.ImageField(upload_to='media/tour_image')
+    image = models.ImageField(upload_to='tour_images')
     business = models.ForeignKey(
         to=BusinessProfile,
         on_delete=models.CASCADE,
@@ -69,6 +69,7 @@ class Guide(models.Model):
         self.slug = slugify(str(self.first_name + '-' + self.last_name))
         return super().save(*args, **kwargs)
     
+
     def __str__(self) -> str:
         return f'{self.first_name} {self.last_name}'
 

@@ -1,4 +1,6 @@
 .env
+static/
+media/
 
 # Created by https://www.toptal.com/developers/gitignore/api/visualstudiocode,django,venv,python
 # Edit at https://www.toptal.com/developers/gitignore?templates=visualstudiocode,django,venv,python

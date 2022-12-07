@@ -169,7 +169,9 @@ CORS_ALLOWED_ORIGINS = [
     'http://34.226.150.68:8000',
     'http://34.226.150.68',
     "http://54.168.105.88",
-    "http://54.168.105.88:8000"
+    "http://54.168.105.88:8000",
+    "http://35.78.172.218:8000",
+    "http://35.78.172.218",
 ]
 
 # CORS_ALLOW_CREDENTIALS=True
@@ -232,8 +234,9 @@ REST_FRAMEWORK = {
         'oauth2_provider.contrib.rest_framework.OAuth2Authentication',  # django-oauth-toolkit >= 1.0.0
         'drf_social_oauth2.authentication.SocialAuthentication',
     ),
+    'DATE_INPUT_FORMATS': ['%d.%m.%Y'],
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
-    'PAGE_SIZE': 2,
+    'PAGE_SIZE': 4,
 }
 
 

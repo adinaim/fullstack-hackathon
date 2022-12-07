@@ -32,7 +32,7 @@ class Tour(models.Model):
         verbose_name='Компания',
         related_name='company'
     )
-    image = models.ImageField(upload_to='media/tour_image')
+    image = models.ImageField(upload_to='media/tour_image', blank=True)
     place = models.CharField(max_length=100, verbose_name='Место')
     desc = models.CharField(max_length=150)
     number_of_days = models.PositiveIntegerField()
