@@ -13,7 +13,7 @@ User = get_user_model()
 
 class TourCreateSerializer(serializers.ModelSerializer):
     user = serializers.ReadOnlyField(source='user.username')
-    company_name = serializers.ReadOnlyField()
+    # company_name = serializers.ReadOnlyField()
 
     class Meta:
         model = Tour
