@@ -1,57 +1,173 @@
 from apps.bio.models import UserProfile
 
-from .models import TourPurchase
 from .tasks import send_details
+
+from django.db.models import F, Func, Value, JSONField
+
+# Thing.objects.update(
+#     properties=Func(
+#         F("properties"),
+#         Value(["color"]),
+#         Value("green", JSONField()),
+#         function="jsonb_set",
+#     )
+# )
+
+
+# thing = Thing.objects.get(name="...")
+# thing.properties['color'] = 'green'
+# thing.save()
 
 def cashback(context, order, total_sum, company):
     user = context['request'].user
-
-    profile = UserProfile.objects.filter(user=user)
+    profile = UserProfile.objects.get(user=user)
+    company = str(company)
 
     if profile:
-        cashback = profile.values('cashback')[0]['cashback']
+        # cashback = profile.values('cashback')[0]['cashback']
+        cashback = profile.cashback #[str(company)]  # список словарей
+        print('cash', cashback)
+        if not cashback:
+            reward = 0
+            order.total_sum = total_sum
+            collected_sum = total_sum
+            cashback.append({company: {"cashback": 0, "collected_sum": collected_sum}})
+            print('cash', cashback)
+        else:
+            for comp in cashback:
+                if company in comp.keys():
+                    print(comp)
+                    print(company)
+                    print(comp.keys())
+                    reward = int(comp[company]['cashback'])
+                    print(reward)
+                    order.total_sum = total_sum - total_sum*reward/100
+                    collected_summ = comp[company]['collected_sum']
+                    comp[company]['collected_sum'] += order.total_sum
+                    # collected_summ = int(profile.cashback[comp][company]['collected_sum'])
+                    collected_summ += order.total_sum
+                    # profile.cashback[comp][company]['collected_sum'] += order.total_sum
+                    print(collected_summ)
+                    print(type(collected_summ))
 
-        for i in cashback:
-            if company in i.keys():
-                reward = int(cashback[company][cashback])
-            else:
-                cashback.append({company: {cashback: 0, collected_sum: 0}})
-                reward = 0
+                    # check_cashback = int(cashback[company][cashback]) 
+                    if collected_summ >= 10000:
+                        comp[company]['cashback'] = 3
+                        # profile.update(
+                        #     cashback)  
+                    if collected_summ >= 20000:
+                        # profile.update(
+                        #     cashback)
+                        comp[company]['cashback'] = 5
+                    if collected_summ >= 50000:
+                        # profile.update(
+                        #     cashback)
+                        comp[company]['cashback'] = 7
+                    if collected_summ >= 100000:
+                        # profile.update(
+                        #     cashback)
+                        comp[company]['cashback'] = 10
+                    # print(comp[company]['cashback'])
+                    # print(type(comp[company]['cashback']))
+                profile.save()
+                print(profile.cashback)
 
-        order.total_sum = total_sum - total_sum*reward/100
+        order.save()
+        email = user.email
+        code = order.code
+        # print(code)
+        send_details(email, code)
 
-        collected_sum = int(cashback[company][collected_sum])
-        collected_sum += order.total_sum
+        # print(collected_sum)
 
-        profile.update(   # .setdefault(company, {cashback: 0, collected_sum: 0})
-            cashback)
+        # for comp in cashback:
+        #     if comp['title'] == str(company):
+        #         reward = int(comp['cashback'])
+        #     else:
+        #         cashback.append(
+        #             {'company': str(company),
+        #                         'cashback': 0, 
+        #                         'collected_sum': 0}
+        #                         )
+        #         reward = 0
+        
+        # for comp in cashback:
+        #     if company in comp.keys():
+        #         reward = int(comp['cashback'])
+        #     else:
+        #         cashback.append({company: {'cashback': 0, 'collected_sum': 0}})
+        #         reward = 0
 
-        check_cashback = int(cashback[company][cashback]) 
-        if check_cashback >= 10000:
-            profile.update(
-                cashback)  # .setdefault(
-                    # company, {cashback: 3, collected_sum: 0}
-                    # )
-        if check_cashback >= 20000:
-            profile.update(
-                cashback)
-        if check_cashback >= 50000:
-            profile.update(
-                cashback)
-        if check_cashback >= 100000:
-            profile.update(
-                cashback)
+            
+
+            # collected_sum = int(cashback[company][collected_sum])
+            # collected_sum += order.total_sum
+
+            # print(collected_sum)
+
+
+        # if profile:
+        #     reward = int(cashback[cashback])
+        # else:
+        #     cashback.append({company: {cashback: 0, collected_sum: 0}})
+        #     reward = 0
+
+        # order.total_sum = total_sum - total_sum*reward/100
+
+        # collected_sum = int(cashback[company][collected_sum])
+        # collected_sum += order.total_sum
+
+        # collected_sum = int(cashback[collected_sum])
+        # cashback[collected_sum] += order.total_sum
+
+        # profile.update(   # .setdefault(company, {cashback: 0, collected_sum: 0})
+        #     cashback=Func(
+        #         F(company),
+        #         Value('collected_sum'),
+        #         Value(collected_sum, JSONField()),
+        #                 function="jsonb_set",)
+        #     )
+
+        # check_cashback = int(cashback[company][cashback]) 
+        # if check_cashback >= 10000:
+        #     profile.update(
+        #         cashback)  # .setdefault(
+        #             # company, {cashback: 3, collected_sum: 0}
+        #             # )
+        # if check_cashback >= 20000:
+        #     profile.update(
+        #         cashback)
+        # if check_cashback >= 50000:
+        #     profile.update(
+        #         cashback)
+        # if check_cashback >= 100000:
+        #     profile.update(
+        #         cashback)
+
+        # if cashback['collected_sum'] >= 10000:
+        #     cashback['cashback'] = 3  # .setdefault(
+        #             # company, {cashback: 3, collected_sum: 0}
+        #             # )
+        # if cashback['collected_sum'] >= 20000:
+        #     cashback['cashback'] = 5
+        # if cashback['collected_sum'] >= 50000:
+        #     cashback['cashback'] = 7
+        # if cashback['collected_sum'] >= 100000:
+        #     cashback['cashback'] = 10
+
+        # profile.save()
 
         # title = tours.tour.title # tour
         # date = tours.date # tour
         # guide = tours.guide # tour
         # people_num = people # order
 
-        order.save()
-        email = user.email
-        code = order.code
-        print(code)
-        send_details(email, code)
+        # profile.save()
+        # order.save()
+        # email = user.email
+        # code = order.code
+        # # print(code)
+        # send_details(email, code)
 
     
     if not profile:

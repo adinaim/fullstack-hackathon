@@ -49,6 +49,10 @@ class TourPurchaseSerializer(serializers.ModelSerializer):
                 order.create_code()
                 if self.context['request'].user.is_authenticated:
                     cashback(self.context, order, total_sum, item['tour'].tour.company_name)
+                    # print(item['tour'].tour.company_name)
+                    # print(type(item['tour'].tour.company_name))
+                    # print(str(item['tour'].tour.company_name))
+                    # print(type(str(item['tour'].tour.company_name)))
 
                 item['tour'].save()
                 order.save()
