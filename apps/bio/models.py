@@ -18,7 +18,7 @@ class UserProfile(models.Model):
     first_name = models.CharField(max_length=150, verbose_name='Имя')
     last_name = models.CharField(max_length=150, verbose_name='Фамилия')
     birthday = models.DateField(verbose_name='Дата рождения')
-    cashback = models.JSONField(blank=True)
+    cashback = models.JSONField(blank=True, default=list)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     # collected_sum = models.PositiveIntegerField(verbose_name='Собранная сумма', default=0)

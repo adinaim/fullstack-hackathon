@@ -158,7 +158,7 @@ class RestorePasswordSerializer(serializers.Serializer):
         phone = self.validated_data.get('phone')
         user = User.objects.get(phone=phone) 
         user.create_activation_code()
-        send_activation_sms(user.phone, user.activation_code)
+        send_activation_sms.delay(user.phone, user.activation_code)
 
 
 class SetRestoredPasswordSerializer(serializers.Serializer):

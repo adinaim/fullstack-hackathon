@@ -32,7 +32,8 @@ def cashback(context, order, total_sum, company):
             order.total_sum = total_sum
             collected_sum = total_sum
             cashback.append({company: {"cashback": 0, "collected_sum": collected_sum}})
-            print('cash', cashback)
+            profile.save()
+            # print('cash', cashback)
         else:
             for comp in cashback:
                 if company in comp.keys():
@@ -74,9 +75,10 @@ def cashback(context, order, total_sum, company):
 
         order.save()
         email = user.email
+        print(email)
         code = order.code
         # print(code)
-        send_details(email, code)
+        send_details.delay(email, code)
 
         # print(collected_sum)
 

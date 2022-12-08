@@ -48,21 +48,17 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt.token_blacklist',
     'django_filters',
     'corsheaders',
+    'django_celery_beat',
 
     'oauth2_provider',
     'social_django',
     'drf_social_oauth2',
 
     'apps.account',
-
     'apps.business',
     'apps.bio',
-
-
     'apps.booking',
-
     'apps.tour',
-
     'apps.review',
 ]
 
@@ -309,3 +305,5 @@ CACHES = {
 
 CELERY_BROKER_URL = 'redis://127.0.0.1:6379/0'
 CELERY_RESULT_BACKEND = 'redis://127.0.0.1:6379/0'
+
+CELERY_BEAT_SCHEDULER='django_celery_beat.schedulers:DatabaseScheduler'

@@ -31,7 +31,7 @@ class UserProfileCreateSerializer(serializers.Serializer):
         # return super().validate(attrs)
         # user = User.objects.get('user.username')
         user = self.context.get('request').user
-
+        attrs['user'] = user
         business = BusinessProfile.objects.filter(user=user).first()
         # if business:
         #     raise serializers.ValidationError('У вас уже существует бизнеес профиль!')
