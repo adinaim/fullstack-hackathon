@@ -27,7 +27,6 @@ class Tour(models.Model):
         on_delete=models.CASCADE,
         verbose_name='Юзер',
         related_name='tours',
-        null=True # нужно убрать
     )
     company_name = models.ForeignKey(
         to=BusinessProfile,
@@ -47,8 +46,6 @@ class Tour(models.Model):
     def save(self, *args, **kwargs):
         if not self.slug:  
             self.slug = slugify(self.title)
-        # if not self.price_usd:
-        #     self.price_usd = round(self.price_som / 84, 1)
         return super().save(*args, **kwargs)
 
 
@@ -89,7 +86,6 @@ class ConcreteTour(models.Model):
         verbose_name_plural = 'Конкретные туры'
 
     def __str__(self) -> str:
-        # return super().__str__()
         return f'Тур в {self.tour.title} {self.date}'
 
 

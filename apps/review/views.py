@@ -11,7 +11,6 @@ from rest_framework.permissions import(
     IsAuthenticated,
     AllowAny,
 )
-from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework import mixins
 
@@ -32,6 +31,7 @@ from .models import (
     GuideRating,
 )
 
+
 class FavoriteViewSet(mixins.CreateModelMixin,
     mixins.DestroyModelMixin,
     mixins.ListModelMixin,
@@ -49,7 +49,6 @@ class FavoriteViewSet(mixins.CreateModelMixin,
             self.permission_classes = [IsOwner]
         return super().get_permissions()
 
-    # @action(detail=True, methods=['POST'])
     def favorite(self, request, pk=None):
         tour = self.get_object().get('slug')
         serializer = FavoriteSerializer(
@@ -129,7 +128,6 @@ class LikeView(mixins.CreateModelMixin,
             self.permission_classes = [IsOwner]
         return super().get_permissions()
 
-    # @action(detail=True, methods=['POST'])#, 'DELETE'])
     def like(self, request, pk=None):
         post = self.get_object()
         serializer = LikeSerializer(

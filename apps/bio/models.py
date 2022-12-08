@@ -21,7 +21,6 @@ class UserProfile(models.Model):
     cashback = models.JSONField(blank=True, default=list)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    # collected_sum = models.PositiveIntegerField(verbose_name='Собранная сумма', default=0)
 
     def __str__(self) -> str:
         return f'{self.first_name} {self.last_name}'

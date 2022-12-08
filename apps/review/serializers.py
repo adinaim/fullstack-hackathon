@@ -10,10 +10,7 @@ from .models import (
 )
 
 
-
 User = get_user_model()
-
-
 
 
 class CommentSerializer(serializers.ModelSerializer):
@@ -25,7 +22,6 @@ class CommentSerializer(serializers.ModelSerializer):
     class Meta:
         model = TourComment
         exclude = ['id']
-        # fields = '__all__'
 
 
 class RatingSerializer(serializers.ModelSerializer):
@@ -43,6 +39,8 @@ class RatingSerializer(serializers.ModelSerializer):
         rating = attrs.get('rating') 
         if rating not in (1, 2, 3, 4, 5):
             raise serializers.ValidationError('Неправлильное значение. Рейтинг должен быть между 1 и 5.')
+        if rating:
+            raise serializers.ValidationError('already exsits')
         return attrs
 
     def update(self, instance, validated_data):
@@ -93,6 +91,8 @@ class GuideRatingSerializer(serializers.ModelSerializer):
         rating = attrs.get('rating') 
         if rating not in (1, 2, 3, 4, 5):
             raise serializers.ValidationError('wrong value! rating must be between 1 and 5')
+        if rating:
+            raise serializers.ValidationError('already exsits')
         return attrs
 
     def update(self, instance, validated_data):
