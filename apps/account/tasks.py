@@ -2,7 +2,12 @@ from django.conf import settings
 # from config.celery import app
 from django.core.mail import send_mail
 from django.template.loader import render_to_string
+from django.utils import timezone
+from datetime import datetime
+from django.contrib.auth import get_user_model
+from celery import shared_task
 
+User = get_user_model()
 
 # @app.task
 def send_activation_sms(phone, activation_code):
@@ -13,7 +18,7 @@ def send_activation_sms(phone, activation_code):
         from_=settings.TWILIO_NUMBER,
         to=phone
     )
-    print(message.sid)
+    # print(message.sid)
 
 
 # @app.task
@@ -32,6 +37,9 @@ def send_activation_code(email, activation_code):
         fail_silently=False   
     )
 
+@shared_task(name='check_activation')
+def check_activation():                 # проверить и запустить на фоне
+    today = datetime.now(timezone.utc)
 
-def check_activation():
-    ...
+    for user in User.objects.filter(is_active=False) and ((today - user.created_at).seconds/3600) > 24:
+        user.delete()

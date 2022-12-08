@@ -4,6 +4,9 @@ from slugify import slugify
 from django.contrib.auth import get_user_model
 
 from apps.business.models import BusinessProfile, Guide
+from datetime import datetime
+
+current = str(datetime.now())
 
 
 User = get_user_model()
@@ -42,8 +45,8 @@ class Tour(models.Model):
         return self.title
 
     def save(self, *args, **kwargs):
-        # if not self.slug:
-        self.slug = slugify(self.title)
+        if not self.slug:  
+            self.slug = slugify(self.title)
         # if not self.price_usd:
         #     self.price_usd = round(self.price_som / 84, 1)
         return super().save(*args, **kwargs)
@@ -76,7 +79,7 @@ class ConcreteTour(models.Model):
 
     def save(self, *args, **kwargs):
         if not self.slug:
-            self.slug = slugify(self.tour.title)
+            self.slug = slugify(str(self.tour.title) + '-' + current[11:19].replace(':', '')) 
         if not self.price_usd:
             self.price_usd = round(self.price_som / 84, 1)
         return super().save(*args, **kwargs)
@@ -87,7 +90,7 @@ class ConcreteTour(models.Model):
 
     def __str__(self) -> str:
         # return super().__str__()
-        return f'Concrete Tour: {self.tour.title}'
+        return f'Тур в {self.tour.title} {self.date}'
 
 
 class TourImage(models.Model):
