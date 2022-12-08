@@ -4,10 +4,8 @@ from .models import (
     TourPurchase, 
     TourItems
 )
-from apps.bio.models import UserProfile
-
 from .utils import cashback
-from apps.tour.models import ConcreteTour
+
 
 class TourItemsSerializer(serializers.ModelSerializer):
     class Meta:
@@ -17,7 +15,6 @@ class TourItemsSerializer(serializers.ModelSerializer):
 
 class TourPurchaseSerializer(serializers.ModelSerializer):
     items = TourItemsSerializer(many=True) 
-     # проверять пвторизован ли user или анонимный
 
     class Meta:
         model = TourPurchase
@@ -44,15 +41,9 @@ class TourPurchaseSerializer(serializers.ModelSerializer):
                 TourItems.objects.bulk_create(orders_items, *args, **kwargs)
                 order.total_sum = total_sum
 
-                # people = item['people_num']
-                # tours = item['tour']
                 order.create_code()
                 if self.context['request'].user.is_authenticated:
                     cashback(self.context, order, total_sum, item['tour'].tour.company_name)
-                    # print(item['tour'].tour.company_name)
-                    # print(type(item['tour'].tour.company_name))
-                    # print(str(item['tour'].tour.company_name))
-                    # print(type(str(item['tour'].tour.company_name)))
 
                 item['tour'].save()
                 order.save()
@@ -63,9 +54,6 @@ class TourPurchaseSerializer(serializers.ModelSerializer):
 
 
 class PurchaseHistorySerializer(serializers.ModelSerializer):
-
-    # url = serializers.ReadOnlyField(source='order.get_absolute_url')
-    # book = serializers.ReadOnlyField(source='order.book')
     
     class Meta:
         model = TourPurchase

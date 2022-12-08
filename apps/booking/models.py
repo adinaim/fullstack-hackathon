@@ -24,10 +24,8 @@ class TourPurchase(models.Model):
         through='TourItems',
     )
     order_id = models.CharField(max_length=58, blank=True)
-    # people_num = models.PositiveIntegerField()
     total_sum = models.DecimalField(max_digits=14, decimal_places=2, default=0)
     status = models.CharField(max_length=9, choices=STATUS_CHOICES, default='pending')
-    # address = models.CharField(max_length=200)
     created_at = models.DateTimeField(auto_now_add=True)
     code = models.CharField(max_length=6, blank=True)
 
@@ -55,13 +53,13 @@ class TourPurchase(models.Model):
 class TourItems(models.Model):
     order = models.ForeignKey(
         to=TourPurchase,
-        on_delete=models.SET_NULL,  # какие on delete еще есть
+        on_delete=models.SET_NULL, 
         related_name='items',
         null=True
     )
     tour = models.ForeignKey(
         to=ConcreteTour,
-        on_delete=models.SET_NULL,  # какие on delete еще есть
+        on_delete=models.SET_NULL,
         related_name='items',
         null=True
     )
