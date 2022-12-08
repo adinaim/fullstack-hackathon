@@ -29,11 +29,11 @@ from django.conf import settings
 from config.celery import app
 from django.core.mail import send_mail
 from django.template.loader import render_to_string
-from celery import shared_task
+# from celery import shared_task
  
 format = '%d.%m.%Y'
  
-@shared_task(name='check_birthday')
+# @shared_task(name='check_birthday')
 def check_birthday():
     users = UserProfile.objects.all()
     for user in users:

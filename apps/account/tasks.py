@@ -5,7 +5,7 @@ from django.template.loader import render_to_string
 from django.utils import timezone
 from datetime import datetime
 from django.contrib.auth import get_user_model
-from celery import shared_task
+# from celery import shared_task
 
 User = get_user_model()
 
@@ -35,7 +35,7 @@ def send_activation_code(email, activation_code):
         fail_silently=False   
     )
 
-@shared_task(name='check_activation')
+# @shared_task(name='check_activation')
 def check_activation():               
     today = datetime.now(timezone.utc)
     for user in User.objects.filter(is_active=False) and ((today - user.created_at).seconds/3600) > 24:
