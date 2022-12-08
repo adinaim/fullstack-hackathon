@@ -119,7 +119,7 @@ class TourSerializer(serializers.ModelSerializer):
 class TourListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Tour
-        fields = ['title', 'image', 'place', 'level', 'number_of_days', 'company_name', 'slug']
+        fields = ['title', 'image', 'place', 'level', 'number_of_days', 'company_name']
 
 
 class ConcreteTourCreateSerializer(serializers.ModelSerializer):
