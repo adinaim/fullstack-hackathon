@@ -3,6 +3,7 @@ from config.celery import app
 from django.core.mail import send_mail
 from django.template.loader import render_to_string
 
+
 @app.task
 def send_details(email, code):
     html_message = render_to_string(

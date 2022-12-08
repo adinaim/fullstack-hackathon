@@ -8,7 +8,6 @@ from .views import (
     RegistrationView,
     PhoneActivationView,
     EmailActivationView,
-    # ActivateView,
     ChangePasswordView,
     SetRestoredPasswordView,
     RestorePasswordView,

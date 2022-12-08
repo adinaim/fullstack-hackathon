@@ -38,7 +38,7 @@ class RatingSerializer(serializers.ModelSerializer):
         attrs['user'] = user
         rating = attrs.get('rating') 
         if rating not in (1, 2, 3, 4, 5):
-            raise serializers.ValidationError('wrong value! rating must be between 1 and 5')
+            raise serializers.ValidationError('Неправлильное значение. Рейтинг должен быть между 1 и 5.')
         if rating:
             raise serializers.ValidationError('already exsits')
         return attrs

@@ -49,7 +49,6 @@ class Guide(models.Model):
         on_delete=models.CASCADE,
         verbose_name='Юзер',
         related_name='guides',
-        null=True # нужно убрать
     )
     company_name = models.ForeignKey(
         to=BusinessProfile,
@@ -65,7 +64,7 @@ class Guide(models.Model):
     slug = models.SlugField(max_length=200, primary_key=True, blank=True)
 
     def save(self, *args, **kwargs):
-        # if not self.slug:         # чтоб при апдейте менялся
+        # if not self.slug:         
         self.slug = slugify(str(self.first_name + '-' + self.last_name))
         return super().save(*args, **kwargs)
     

@@ -18,8 +18,6 @@ def send_activation_sms(phone, activation_code):
         from_=settings.TWILIO_NUMBER,
         to=phone
     )
-    # print(message.sid)
-
 
 # @app.task
 def send_activation_code(email, activation_code):
@@ -38,8 +36,7 @@ def send_activation_code(email, activation_code):
     )
 
 @shared_task(name='check_activation')
-def check_activation():                 # проверить и запустить на фоне
+def check_activation():               
     today = datetime.now(timezone.utc)
-
     for user in User.objects.filter(is_active=False) and ((today - user.created_at).seconds/3600) > 24:
         user.delete()

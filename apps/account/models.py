@@ -46,7 +46,6 @@ class User(AbstractBaseUser):
     activation_code = models.CharField(max_length=10, blank=True)
     code_method = models.CharField(choices=CONFIRM_CHOICES, max_length=6, default='phone')
     created_at = models.DateTimeField(auto_now_add=True)
-    # birthday (MinValueValidator)
 
     objects = UserManager()
 
